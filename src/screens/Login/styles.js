@@ -8,6 +8,7 @@ export const Container = styled.View`
 `;
 
 export const Title = styled.Text`
+  font-family: ${props => props.theme.fontFamily.regular};
   font-size: ${props => props.theme.fontSizes['2xl']};
   color: ${props => props.theme.colors.black};
 `;
