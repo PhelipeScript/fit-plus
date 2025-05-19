@@ -32,6 +32,14 @@ export const Form = styled.View`
   gap: 16px;
 `
 
+export const ErrorText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.fontFamily.medium};
+    font-size: ${theme.fontSizes.base};
+    color: ${theme.colors.red500};
+  `}
+`
+
 export const EyeClosedIcon = styled(EyeClosed).attrs({
   size: 24,
 })`
