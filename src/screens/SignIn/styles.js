@@ -18,7 +18,7 @@ export const ContentWrapper = styled(ScrollView).attrs(({theme}) => ({
   keyboardShouldPersistTaps: 'handled',
 }))``;
 
-export const Subtitle = styled.Text`
+export const Text = styled.Text`
   ${({ theme }) => css`
     font-family: ${theme.fontFamily.regular};
     font-size: ${theme.fontSizes.lg};
@@ -46,4 +46,30 @@ export const EyeOpenIcon = styled(Eye).attrs({
   ${({ theme }) => css`
     color: ${theme.colors.gray300};
   `}
+`
+
+export const ForgotPasswordText = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.fontFamily.regular};
+    font-size: ${theme.fontSizes.base};
+    color: ${theme.colors.secondary};
+  `}
+  text-align: center;
+`
+
+export const SignUpContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+`
+
+export const SignUpText = styled.Text`
+  ${({ theme, type }) => css`
+    font-family: ${type === 'regular' ? theme.fontFamily.regular : theme.fontFamily.bold};
+    font-size: ${theme.fontSizes.base};
+    color: ${type === 'regular' ? theme.colors.gray300 : theme.colors.primary};
+  `}
+
+  margin-top: 48px;
 `
