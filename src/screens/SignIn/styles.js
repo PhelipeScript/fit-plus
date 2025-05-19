@@ -1,14 +1,49 @@
-import styled from "styled-components/native";
+import { Eye, EyeClosed } from "phosphor-react-native";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import styled, { css } from "styled-components/native";
 
-export const Container = styled.View`
+export const Container = styled(SafeAreaView)`
   flex: 1;
-  align-items: center;
-  justify-content: center;
-  background: ${props => props.theme.colors.background}
-`;
+  background: ${props => props.theme.colors.background};
+`
 
-export const Title = styled.Text`
-  font-family: ${props => props.theme.fontFamily.regular};
-  font-size: ${props => props.theme.fontSizes['2xl']};
-  color: ${props => props.theme.colors.black};
-`;
+export const ContentWrapper = styled(ScrollView).attrs(({theme}) => ({
+  contentContainerStyle: {
+    flexGrow: 1,
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
+    padding: 24,
+  },
+  keyboardShouldPersistTaps: 'handled',
+}))``;
+
+export const Subtitle = styled.Text`
+  ${({ theme }) => css`
+    font-family: ${theme.fontFamily.regular};
+    font-size: ${theme.fontSizes.lg};
+    color: ${theme.colors.gray300};
+  `}
+`
+
+export const Form = styled.View`
+  margin-top: 62px;
+  width: 100%;
+  gap: 16px;
+`
+
+export const EyeClosedIcon = styled(EyeClosed).attrs({
+  size: 24,
+})`
+  ${({ theme }) => css`
+    color: ${theme.colors.gray300};
+  `}
+`
+
+export const EyeOpenIcon = styled(Eye).attrs({
+  size: 24,
+})`
+  ${({ theme }) => css`
+    color: ${theme.colors.gray300};
+  `}
+`
