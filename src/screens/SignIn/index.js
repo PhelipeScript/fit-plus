@@ -2,6 +2,7 @@ import { Image, Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedba
 import { Container, ContentWrapper, EyeClosedIcon, EyeOpenIcon, Form, Subtitle } from "./styles";
 import { CustomInput } from "../../components/CustomInput";
 import { useState } from "react";
+import { CustomButton } from "../../components/CustomButton";
 
 export function SignIn() {
   const [email, setEmail] = useState("")
@@ -38,6 +39,8 @@ export function SignIn() {
                 iconPos="right"
                 separateIcon
               />
+
+              <CustomButton title="Entrar" />
             </Form>
           </ContentWrapper>
         </TouchableWithoutFeedback>
