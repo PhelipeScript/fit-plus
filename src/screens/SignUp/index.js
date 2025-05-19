@@ -1,18 +1,36 @@
 import { Image, Keyboard, KeyboardAvoidingView, Platform, TouchableWithoutFeedback } from "react-native";
-import { Container, ContentWrapper, EyeClosedIcon, EyeOpenIcon, Form, SignInContainer, SignInText, Subtitle, Title, TitleContainer } from "./styles";
+import { Container, ContentWrapper, ErrorText, EyeClosedIcon, EyeOpenIcon, Form, SignInContainer, SignInText, Subtitle, Title, TitleContainer } from "./styles";
 import { CustomInput } from "../../components/CustomInput";
 import { useState } from "react";
 import { CustomButton } from "../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
+import { z } from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const SignUpSchema = z.object({
+  name: z.string().trim().nonempty("O nome não pode estar vazio!"),
+  email: z.string().email("Email inválido!"),
+  password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres!"),
+  confirmPassword: z.string().min(6, "A senha deve conter pelo menos 6 caracteres!"),
+}).refine((data) => data.password === data.confirmPassword, {
+  path: ['confirmPassword'],
+  message: 'As senhas não coincidem!',
+})
 
 export function SignUp() {
   const navigate = useNavigation()
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    resolver: zodResolver(SignUpSchema)
+  })
 
   function goToSignInScreen() {
     navigate.replace('SignIn')
@@ -33,45 +51,89 @@ export function SignUp() {
             </TitleContainer>
             
             <Form>
-              <CustomInput 
-                label="Seu nome completo" 
-                placeholder="Digite o seu nome..." 
-                value={name}
-                onChangeText={setName}
+              <Controller 
+                name="name"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <CustomInput 
+                    label="Seu nome completo" 
+                    placeholder="Digite o seu nome..." 
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
               />
+              {errors.name && <ErrorText>{errors.name.message}</ErrorText>}
 
-              <CustomInput 
-                label="Seu melhor email" 
-                placeholder="usuario@email.com" 
-                value={email}
-                onChangeText={setEmail}
+              <Controller 
+                name="email"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <CustomInput 
+                    label="Seu melhor email" 
+                    placeholder="usuario@email.com"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
               />
+              {errors.email && <ErrorText>{errors.email.message}</ErrorText>}
 
-              <CustomInput 
-                label="Crie uma senha" 
-                placeholder="********" 
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                icon={showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-                onIconPress={() => setShowPassword(!showPassword)}
-                iconPos="right"
-                separateIcon
+              <Controller 
+                name="password"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <CustomInput 
+                    label="Crie uma senha" 
+                    placeholder="********" 
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry={!showPassword}
+                    icon={showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                    onIconPress={() => setShowPassword(!showPassword)}
+                    iconPos="right"
+                    separateIcon
+                  />
+                )}
               />
+              {errors.password && <ErrorText>{errors.password.message}</ErrorText>}
 
-              <CustomInput 
-                label="Confirme sua senha" 
-                placeholder="********" 
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={!showConfirmPassword}
-                icon={showConfirmPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-                onIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                iconPos="right"
-                separateIcon
+              <Controller 
+                name="confirmPassword"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <CustomInput 
+                    label="Confirme sua senha" 
+                    placeholder="********" 
+                    value={value}
+                    onChangeText={onChange}
+                    secureTextEntry={!showConfirmPassword}
+                    icon={showConfirmPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                    onIconPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    iconPos="right"
+                    separateIcon
+                  />
+                )}
               />
+              {errors.confirmPassword && <ErrorText>{errors.confirmPassword.message}</ErrorText>}
 
-              <CustomButton title="Cadastrar" style={{ marginTop: 16 }} />
+              <CustomButton 
+                title="Cadastrar" 
+                onPress={handleSubmit()}
+                style={{ marginTop: 16 }} 
+              />
             </Form>
 
             <SignInContainer onPress={goToSignInScreen}>
