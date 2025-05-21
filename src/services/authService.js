@@ -1,5 +1,10 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from './firebaseConfig';
+import { UserNotFoundError } from '../errors/UserNotFoundError';
+import { InvalidCredentialError } from '../errors/InvalidCredentialError';
+import { EmailAlreadyExistsError } from '../errors/EmailAlreadyExistsError';
+import { WeakPasswordError } from '../errors/WeakPasswordError';
+import { InvalidEmailError } from '../errors/InvalidEmailError';
 
 /**
  * Realiza o login do usuário com e-mail e senha.
@@ -13,14 +18,11 @@ export async function signIn(email, password) {
     return userCredential;
   } catch (error) {
     // Trate erros específicos com base no código de erro
-    if (error.code === 'auth/wrong-password') {
-      throw new Error('Senha incorreta. Por favor, tente novamente.');
+    if (error.code === 'auth/invalid-email' || error.code === 'auth/wrong-password') {
+      throw new InvalidCredentialError();
     } else if (error.code === 'auth/user-not-found') {
-      throw new Error('Usuário não encontrado. Verifique o e-mail informado.');
-    } else if (error.code === 'auth/invalid-email') {
-      throw new Error('E-mail inválido. Verifique o formato do e-mail.');
+      throw new UserNotFoundError();
     } else {
-      // Erro genérico
       throw new Error('Erro ao realizar login. Tente novamente mais tarde.');
     }
   }
@@ -38,11 +40,11 @@ export async function signUp(email, password) {
     return userCredential;
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
-      throw new Error('Este e-mail já está em uso. Tente fazer login ou use outro e-mail.');
-    } else if (error.code === 'auth/weak-password') {
-      throw new Error('A senha é muito fraca. Escolha uma senha mais segura.');
+      throw new EmailAlreadyExistsError();
+    } else if (error.code === 'auth/password-does-not-meet-requirements') {
+      throw new WeakPasswordError();
     } else if (error.code === 'auth/invalid-email') {
-      throw new Error('E-mail inválido. Verifique o formato do e-mail.');
+      throw new InvalidEmailError();
     } else {
       throw new Error('Erro ao criar conta. Tente novamente mais tarde.');
     }
