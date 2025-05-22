@@ -7,6 +7,10 @@ import { useNavigation } from "@react-navigation/native";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signUp } from "../../services/authService";
+import { EmailAlreadyExistsError } from "../../errors/EmailAlreadyExistsError";
+import { InvalidEmailError } from "../../errors/InvalidEmailError";
+import { WeakPasswordError } from "../../errors/WeakPasswordError";
 
 const SignUpSchema = z.object({
   name: z.string().trim().nonempty("O nome não pode estar vazio!"),
@@ -20,9 +24,10 @@ const SignUpSchema = z.object({
 
 export function SignUp() {
   const navigate = useNavigation()
+  const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, formState: { errors }, setError, reset } = useForm({
     defaultValues: {
       name: '',
       email: '',
@@ -34,6 +39,30 @@ export function SignUp() {
 
   function goToSignInScreen() {
     navigate.replace('SignIn')
+  }
+
+  /**
+  * 
+  * @param {z.infer<SignUpSchema>} data 
+  */
+  async function handleSignUp({ email, password }) {
+    setIsLoading(true)
+    try {
+      await signUp(email, password)
+      reset()
+      // navegar para BottomTabsNavigation
+    } catch (error) {
+      if (error instanceof EmailAlreadyExistsError || error instanceof InvalidEmailError) {
+        setError("email", { type: "manual", message: error.message });
+      } else if (error instanceof WeakPasswordError) {
+        setError("password", { type: "manual", message: error.message });
+      } else {
+        console.error(error);
+        alert(error.message);
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -131,8 +160,9 @@ export function SignUp() {
 
               <CustomButton 
                 title="Cadastrar" 
-                onPress={handleSubmit()}
+                onPress={handleSubmit(handleSignUp)}
                 style={{ marginTop: 16 }} 
+                isLoading={isLoading}
               />
             </Form>
 
