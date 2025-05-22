@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 import { InvalidCredentialError } from '../errors/InvalidCredentialError';
@@ -60,5 +60,18 @@ export async function signOut() {
     await firebaseSignOut(auth);
   } catch (error) {
     throw new Error('Erro ao sair da conta. Tente novamente.');
+  }
+}
+
+/**
+ * Envia um email de redefinição de senha para o email do usuário.
+ * @param {string} email 
+ * @returns {Promise<void>}
+ */
+export async function resetPasswordByEmail(email) {
+  try {
+    await sendPasswordResetEmail(auth, email)
+  } catch (error) {
+    throw new Error('Erro ao enviar e-mail de redefinição.');
   }
 }
