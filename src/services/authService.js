@@ -18,7 +18,7 @@ export async function signIn(email, password) {
     return userCredential;
   } catch (error) {
     // Trate erros específicos com base no código de erro
-    if (error.code === 'auth/invalid-email' || error.code === 'auth/wrong-password') {
+    if (error.code === 'auth/invalid-credential') {
       throw new InvalidCredentialError();
     } else if (error.code === 'auth/user-not-found') {
       throw new UserNotFoundError();

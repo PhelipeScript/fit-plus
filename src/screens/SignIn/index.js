@@ -7,6 +7,9 @@ import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "../../services/authService";
+import { InvalidCredentialError } from "../../errors/InvalidCredentialError";
+import { UserNotFoundError } from "../../errors/UserNotFoundError";
 
 const SignInSchema = z.object({
   email: z.string().email("Email inválido!"),
@@ -15,9 +18,10 @@ const SignInSchema = z.object({
 
 export function SignIn() {
   const navigate = useNavigation()
+  const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, formState: { errors }, setError, reset } = useForm({
     defaultValues: {
       email: '',
       password: '',
@@ -27,6 +31,30 @@ export function SignIn() {
 
   function goToSignUpScreen() {
     navigate.replace('SignUp')
+  }
+
+  /**
+  * 
+  * @param {z.infer<SignInSchema>} data 
+  */
+  async function handleSignIn({ email, password }) {
+    setIsLoading(true)
+    try {
+      await signIn(email, password)
+      reset()
+      // navegar para BottomTabsNavigation
+    } catch (error) {
+      if (error instanceof InvalidCredentialError) {
+        setError("password", { type: "manual", message: error.message });
+      } else if (error instanceof UserNotFoundError) {
+        setError("email", { type: "manual", message: error.message });
+      } else {
+        console.error(error);
+        alert(error.message);
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -82,8 +110,9 @@ export function SignIn() {
 
               <CustomButton 
                 title="Entrar" 
-                onPress={handleSubmit()} 
+                onPress={handleSubmit(handleSignIn)} 
                 style={{ marginTop: 16 }}
+                isLoading={isLoading}
               />
 
               <TouchableOpacity style={{ alignSelf: 'center' }}>
