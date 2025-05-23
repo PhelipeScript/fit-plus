@@ -53,7 +53,14 @@ export function ResetPasswordModal({ bottomSheetRef }) {
       ref={bottomSheetRef}
       index={0}
       snapPoints={snapPoints}
-      backdropComponent={(props) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} />}
+      backdropComponent={(props) => (
+        <BottomSheetBackdrop 
+          {...props} 
+          disappearsOnIndex={-1} 
+          appearsOnIndex={0} 
+          opacity={0.8} 
+        />
+      )}
     >
       <Content>
         <Title>Redefinir Senha</Title>
@@ -81,6 +88,7 @@ export function ResetPasswordModal({ bottomSheetRef }) {
           style={{ marginTop: 16 }}
           isLoading={isLoading}
           onPress={handleSubmit(handleResetPassword)}
+          type="SECONDARY"
         />
       </Content>
     </Container>
