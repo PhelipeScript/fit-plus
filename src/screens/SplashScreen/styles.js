@@ -15,3 +15,11 @@ export const LoadingText = styled.Text`
         color: ${theme.colors.secondary};
     `}
 `
+
+export const ProgressBar = styled.View`
+  height: 4px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  align-self: flex-start;
+  margin-top: 24px;
+  border-radius: 2px;
+`;
