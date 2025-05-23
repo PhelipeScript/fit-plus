@@ -27,14 +27,18 @@ export function SplashScreen() {
 
   useEffect(() => {
     if (fontsLoaded) setProgress((p) => p + 1);
+  }, [fontsLoaded])
 
-    const unsub = onAuthStateChanged(auth, (user) => {
-      setLogged(!!user);
-      setProgress((p) => p + 1);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, {
+      next: (user) => {
+        setLogged(!!user);
+        setProgress((p) => p + 1);
+      }
     });
 
     return () => unsub();
-  }, [fontsLoaded]);
+  }, []);
 
   useEffect(() => {
     if (progress === totalSteps) {
