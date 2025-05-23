@@ -1,7 +1,7 @@
-import { Image, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View, Text as ReactText } from "react-native";
+import { Image, Keyboard, KeyboardAvoidingView, Platform, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { Container, ContentWrapper, ErrorText, EyeClosedIcon, EyeOpenIcon, ForgotPasswordText, Form, SignUpContainer, SignUpText, Text } from "./styles";
 import { CustomInput } from "../../components/CustomInput";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { CustomButton } from "../../components/CustomButton";
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "../../services/authService";
 import { InvalidCredentialError } from "../../errors/InvalidCredentialError";
 import { UserNotFoundError } from "../../errors/UserNotFoundError";
-import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
+import { ResetPasswordModal } from "../../components/modals/ResetPasswordModal";
 
 const SignInSchema = z.object({
   email: z.string().email("Email inválido!"),
@@ -18,9 +18,8 @@ const SignInSchema = z.object({
 })
 
 export function SignIn() {
-  const bottomSheetRef = useRef(null)
-  const snapPoints = useMemo(() => ['30%'], [])
   const navigate = useNavigation()
+  const bottomSheetRef = useRef(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -132,35 +131,11 @@ export function SignIn() {
               <SignUpText type="bold">Cadastre-se</SignUpText>
             </SignUpContainer>
 
-            <BottomSheetModal
-              ref={bottomSheetRef}
-              index={0}
-              snapPoints={snapPoints}
-            >
-              <BottomSheetView style={styles.content}>
-                <View style={styles.container}>
-                  <CustomInput 
-                    label="Email" 
-                    placeholder="usuario@email.com" 
-                  />
+            <ResetPasswordModal bottomSheetRef={bottomSheetRef} />
 
-                  <CustomButton 
-                    title="Redefinir senha" 
-                    style={{ marginTop: 16 }}
-                    isLoading={isLoading}
-                  />
-                </View>
-              </BottomSheetView>
-          </BottomSheetModal>
           </ContentWrapper>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </Container>
   )
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', width: '100%', paddingHorizontal: 32 },
-  content: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 20, fontWeight: 'bold' },
-});
