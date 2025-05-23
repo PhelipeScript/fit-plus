@@ -13,7 +13,7 @@ export function SplashScreen() {
             next: (user) => {
                 setTimeout(() => {
                     if (user) {
-                        // goToBottomTabNavigation
+                        navigate.replace("BottomTabsNavigation")
                     }
                     else {
                         navigate.replace("SignIn")

@@ -50,7 +50,7 @@ export function SignUp() {
     try {
       await signUp(email, password)
       reset()
-      // navegar para BottomTabsNavigation
+      navigate.replace("BottomTabsNavigation")
     } catch (error) {
       if (error instanceof EmailAlreadyExistsError || error instanceof InvalidEmailError) {
         setError("email", { type: "manual", message: error.message });
