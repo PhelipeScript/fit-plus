@@ -6,4 +6,5 @@ export const Container = styled(SafeAreaView)`
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.colors.background};
+  padding: 24px;
 `
