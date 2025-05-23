@@ -9,6 +9,7 @@ export const Container = styled.TouchableOpacity`
 `
 
 export const InfoContainer = styled.View`
+  flex: 1;
   gap: 4px;
 `
 
@@ -29,7 +30,7 @@ export const ValueText = styled.Text`
 `
 
 export const IconContainer = styled.View`
-  background: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.blue100};
   width: 48px;
   height: 48px;
   border-radius: 9999px;
