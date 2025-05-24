@@ -1,10 +1,11 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, sendPasswordResetEmail } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as firebaseSignOut, sendPasswordResetEmail, deleteUser } from 'firebase/auth';
 import { auth } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 import { InvalidCredentialError } from '../errors/InvalidCredentialError';
 import { EmailAlreadyExistsError } from '../errors/EmailAlreadyExistsError';
 import { WeakPasswordError } from '../errors/WeakPasswordError';
 import { InvalidEmailError } from '../errors/InvalidEmailError';
+import { createUser } from './firestoreService';
 
 /**
  * Realiza o login do usuário com e-mail e senha.
@@ -34,9 +35,19 @@ export async function signIn(email, password) {
  * @param {string} password
  * @returns {Promise<import('firebase/auth').UserCredential>}
  */
-export async function signUp(email, password) {
+export async function signUp(name, email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
+
+    try {
+      await createUser(uid, { name, email });
+    } catch (firestoreError) {
+      await deleteUser(userCredential.user);
+      console.error(firestoreError)
+      throw new Error('Erro ao salvar os dados do usuário.');
+    }
+
     return userCredential;
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {

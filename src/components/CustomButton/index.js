@@ -15,7 +15,7 @@ export function CustomButton({title, icon: Icon, type = 'PRIMARY', isLoading = f
     const theme = useTheme()
 
     return (
-        <Container {...props} type={type}>
+        <Container {...props} type={type} disabled={isLoading}>
             {!isLoading && Icon && (
                 <Icon  
                     color={

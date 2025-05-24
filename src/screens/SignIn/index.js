@@ -13,7 +13,7 @@ import { UserNotFoundError } from "../../errors/UserNotFoundError";
 import { ResetPasswordModal } from "../../components/modals/ResetPasswordModal";
 
 const SignInSchema = z.object({
-  email: z.string().email("Email inválido!"),
+  email: z.string().toLowerCase().trim().email("Email inválido!"),
   password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres!")
 })
 

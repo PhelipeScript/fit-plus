@@ -14,7 +14,7 @@ import { WeakPasswordError } from "../../errors/WeakPasswordError";
 
 const SignUpSchema = z.object({
   name: z.string().trim().nonempty("O nome não pode estar vazio!"),
-  email: z.string().email("Email inválido!"),
+  email: z.string().toLowerCase().trim().email("Email inválido!"),
   password: z.string().min(6, "A senha deve conter pelo menos 6 caracteres!"),
   confirmPassword: z.string().min(6, "A senha deve conter pelo menos 6 caracteres!"),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -45,10 +45,10 @@ export function SignUp() {
   * 
   * @param {z.infer<SignUpSchema>} data 
   */
-  async function handleSignUp({ email, password }) {
+  async function handleSignUp({ name, email, password }) {
     setIsLoading(true)
     try {
-      await signUp(email, password)
+      await signUp(name, email, password)
       reset()
       navigate.replace("BottomTabsNavigation")
     } catch (error) {
