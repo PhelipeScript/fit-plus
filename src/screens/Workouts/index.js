@@ -1,10 +1,15 @@
-import { Container, DescriptionText, EmptyIcon, EmptyText, Title, WorkoutList, WorkoutListEmpty } from "./styles";
+import { Container, DescriptionText, EmptyIcon, EmptyText, NewWorkout, NewWorkoutIcon, Title, WorkoutList, WorkoutListEmpty } from "./styles";
 import { GenericCard } from '../../components/cards/GenericCard/index';
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export function Workouts() {
+  const navigation = useNavigation()
   const [workouts, setWorkouts] = useState([])
 
+  function goToNewWorkout() {
+    navigation.push('NewWorkout')
+  }
 
   return (
     <Container>
@@ -31,7 +36,11 @@ export function Workouts() {
           ? {flex: 1} 
           : { minWidth: '100%', gap: 16, paddingBottom: 120 }
         }
-    />
+      />
+
+      <NewWorkout onPress={goToNewWorkout}>
+        <NewWorkoutIcon />
+      </NewWorkout>
     </Container>
   )
 }
