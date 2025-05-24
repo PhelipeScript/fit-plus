@@ -6,15 +6,21 @@ import { Container, Subtitle, Title, TitleContainer } from "./styles";
  * @param {{
  *   title: string
  *   subtitle?: string
+ *   withFeedBack:? boolean
  *   children: import("react").ReactElement 
- * }} props
+ * } & import("react-native").PressableProps} props
  * @returns 
  */
-export function GenericCard({ title, subtitle, children }) {
+export function GenericCard({ title, subtitle, withFeedBack = false, children, ...props }) {
   return (
-    <Container>
+    <Container
+      style={({ pressed }) => [
+        { opacity: pressed ? (withFeedBack ? 0.2 : 1) : 1 } 
+      ]}
+      {...props}
+    >
       <TitleContainer>
-        <Title>{title}</Title>
+        <Title numberOfLines={2} ellipsizeMode="tail" >{title}</Title>
         {subtitle && <Divider vertical />}
         {subtitle && <Subtitle>{subtitle}</Subtitle>}
       </TitleContainer>
