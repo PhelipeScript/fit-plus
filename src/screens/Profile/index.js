@@ -6,6 +6,7 @@ import { CustomButton } from './../../components/CustomButton/index';
 import { useState } from "react";
 import { signOut } from '../../services/authService'
 import { useNavigation } from "@react-navigation/native";
+import { Avatar } from "../../components/Avatar";
 
 export function Profile() {
   const navigation = useNavigation()
@@ -27,6 +28,8 @@ export function Profile() {
   return (
     <Container>
       <ContentContainer>
+        <Avatar />
+
         <GenericCard 
           title="Informações Pessoais" 
           children={(
