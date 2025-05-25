@@ -8,8 +8,8 @@ export const Container = styled.View`
 export const Label = styled.Text`
   ${({ theme }) => css`
     font-family: ${theme.fontFamily.regular};
-    font-size: ${theme.fontSizes.lg};
-    color: ${theme.colors.gray300};
+    font-size: ${theme.fontSizes.base};
+    color: ${theme.colors.gray200};
   `}
 `;
 
@@ -31,8 +31,9 @@ export const Input = styled.TextInput.attrs(({ theme }) => ({
 }))`
   ${({ theme }) => css`
     font-family: ${theme.fontFamily.regular};
-    font-size: ${theme.fontSizes.lg};
+    font-size: ${theme.fontSizes.base};
     color: ${theme.colors.black};
-    flex: 1
+    flex: 1;
+    height: 50px;
   `}
 `
