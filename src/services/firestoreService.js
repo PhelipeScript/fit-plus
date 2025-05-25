@@ -1,6 +1,8 @@
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
+/** @type {import('../types/userProps').UserProps} UserProps */
+
 /**
  * Cria um novo usuário no Firestore.
  * @param {UserProps} user 
@@ -54,5 +56,20 @@ export async function getUser(uid) {
   } catch (error) {
     console.error("Erro ao buscar usuário:", error);
     throw new Error("Erro ao buscar dados do usuário.");
+  }
+}
+
+/**
+ * Atualiza as informações do usuário no Firestore.
+ * @param {UserProps} user
+ * @returns {Promise<void>}
+ */
+export async function updateUser(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, {...user, updatedAt: Timestamp.now()});
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error);
+    throw new Error("Não foi possível atualizar os dados do usuário.");
   }
 }
