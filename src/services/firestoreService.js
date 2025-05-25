@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
@@ -71,5 +71,24 @@ export async function updateUser(user) {
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
     throw new Error("Não foi possível atualizar os dados do usuário.");
+  }
+}
+
+/**
+ * Adiciona um novo treino à subcoleção "workouts" do usuário autenticado.
+ * @param {object} workout
+ * @returns {Promise<void>} 
+ */
+export async function createNewWorkout(workoutData) {
+  try {
+    const userId = auth.currentUser?.uid;
+    const userWorkoutsRef = collection(db, `users/${userId}/workouts`);
+    await addDoc(userWorkoutsRef, {
+      ...workoutData,
+      createdAt: Timestamp.now(),
+    })
+  } catch (error) {
+    console.error('Erro ao adicionar treino:', error);
+    throw new Error('Não foi possível adicionar o treino.');
   }
 }
