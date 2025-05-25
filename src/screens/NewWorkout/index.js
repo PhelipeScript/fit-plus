@@ -40,7 +40,7 @@ export function NewWorkout() {
   async function handleCreateNewWorkout(newWorkout) {
     setIsLoading(true)
     try {
-      await createNewWorkout(newWorkout)
+      await createNewWorkout({ ...newWorkout, totalExercises: 0 })
       reset()
     } catch (error) {
       console.error(error)

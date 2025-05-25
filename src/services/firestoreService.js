@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
@@ -90,5 +90,30 @@ export async function createNewWorkout(workoutData) {
   } catch (error) {
     console.error('Erro ao adicionar treino:', error);
     throw new Error('Não foi possível adicionar o treino.');
+  }
+}
+
+/**
+ * Busca todos os treinos de um usuário no Firestore.
+ * @param {string?} userId 
+ * @returns {Promise<Array>}
+ */
+export async function getUserWorkouts(userId) {
+  try {
+    if (!userId) {
+      userId = auth.currentUser?.uid
+    }
+    const workoutsRef = collection(db, `users/${userId}/workouts`);
+    const snapshot = await getDocs(workoutsRef);
+
+    const workouts = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return workouts;
+  } catch (error) {
+    console.error('Erro ao buscar treinos:', error);
+    throw new Error('Não foi possível carregar os treinos.');
   }
 }
