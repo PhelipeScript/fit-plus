@@ -41,7 +41,7 @@ export async function signUp(name, email, password) {
     const uid = userCredential.user.uid;
 
     try {
-      await createUser(uid, { name, email });
+      await createUser({ uid, name, email });
     } catch (firestoreError) {
       await deleteUser(userCredential.user);
       console.error(firestoreError)
