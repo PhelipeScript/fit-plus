@@ -4,8 +4,25 @@ import { SignUp } from '../../screens/SignUp/index';
 import { SplashScreen } from "../../screens/SplashScreen";
 import { BottomTabsNavigation } from "../BottomTabsNavigation";
 import { NewWorkout } from "../../screens/NewWorkout";
+import { UserProvider } from '../../contexts/UserContext'
 
 const Stack = createNativeStackNavigator()
+
+function PrivateBottomTabs() {
+  return (
+    <UserProvider>
+      <BottomTabsNavigation />
+    </UserProvider>
+  )
+}
+
+function PrivateNewWorkout() {
+  return (
+    <UserProvider>
+      <NewWorkout />
+    </UserProvider>
+  )
+}
 
 export function StackNavigation() {
   return (
@@ -16,10 +33,10 @@ export function StackNavigation() {
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="BottomTabsNavigation" component={BottomTabsNavigation} />
+      <Stack.Screen name="BottomTabsNavigation" component={PrivateBottomTabs} />
       <Stack.Screen 
         name="NewWorkout" 
-        component={NewWorkout} 
+        component={PrivateNewWorkout} 
         options={{ 
           headerShown: true, 
           headerTitleAlign: 'center', 

@@ -13,5 +13,12 @@
  * @property {'low' | 'medium' | 'high' | null} [activityLevel]
  * @property {Date?} [createdAt]
  * @property {Date?} [updatedAt]
- * @exports UserProps
+ * @exports UserProps 
+ * 
+ * 
+ * @typedef {Object} UserContextProps
+ * @property {UserProps | null} user
+ * @property {(user: UserProps) => void} setUser
+ * 
+ * @exports UserContextProps
  */
