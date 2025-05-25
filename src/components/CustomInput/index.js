@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Container, Input, InputWrapper, Label } from "./styles";
-import { EyeClosed } from "phosphor-react-native";
 import { TouchableOpacity } from "react-native";
 
 /**
@@ -15,7 +14,7 @@ import { TouchableOpacity } from "react-native";
   * separateIcon?: boolean,
   * onChangeText?: () => void,
   * onIconPress?: () => void,
- * }} props 
+ * } & import("react-native").TextInputProps} props 
  */
 export function CustomInput({ 
   label, 
@@ -50,6 +49,7 @@ export function CustomInput({
           onFocus={() => setIsFocused(true)} 
           onBlur={() => setIsFocused(false)}
           secureTextEntry={secureTextEntry}
+          {...props}
         />
       </InputWrapper>
     </Container>

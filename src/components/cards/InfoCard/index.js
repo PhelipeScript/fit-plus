@@ -8,13 +8,13 @@ import { Container, EditIcon, IconContainer, InfoContainer, Title, ValueText } f
  *  title: string
  *  value: string
  *  editable?: boolean
- * }} props
+ * } & import("react-native").TouchableOpacityProps} props
  */
-export function InfoCard({ icon: Icon, title, value, editable = false }) {
+export function InfoCard({ icon: Icon, title, value, editable = false, ...props }) {
   const theme = useTheme()
 
   return (
-    <Container>
+    <Container {...props}>
       <IconContainer>
         <Icon 
           size={24}
