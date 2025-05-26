@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useTheme } from "styled-components";
 import { SelectInput } from '../../components/SelectInput/index';
 import { createNewWorkout } from "../../services/firestoreService";
+import { useNavigation } from "@react-navigation/native";
 
 const NewWorkoutSchema = z.object({
   name: z.string().trim().nonempty("Esse campo não pode estar vazio"),
@@ -21,6 +22,7 @@ const NewWorkoutSchema = z.object({
 
 export function NewWorkout() {
   const theme = useTheme()
+  const navigation = useNavigation()
   const [isLoading, setIsLoading] = useState(false)
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
     defaultValues: {
@@ -42,6 +44,7 @@ export function NewWorkout() {
     try {
       await createNewWorkout({ ...newWorkout, totalExercises: 0 })
       reset()
+      navigation.goBack()
     } catch (error) {
       console.error(error)
     } finally {

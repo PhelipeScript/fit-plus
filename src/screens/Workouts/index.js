@@ -1,15 +1,20 @@
 import { Container, DescriptionText, EmptyIcon, EmptyText, NewWorkout, NewWorkoutIcon, Title, WorkoutList, WorkoutListEmpty } from "./styles";
 import { GenericCard } from '../../components/cards/GenericCard/index';
-import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useWorkouts } from '../../hooks/useWorkouts';
+import { useCallback } from "react";
 
 export function Workouts() {
   const navigation = useNavigation()
-  const [workouts, setWorkouts] = useState([])
+  const { workouts, fetchWorkouts } = useWorkouts()
 
   function goToNewWorkout() {
     navigation.push('NewWorkout')
   }
+
+  useFocusEffect(useCallback(() => {
+    fetchWorkouts()
+  }, []))
 
   return (
     <Container>
@@ -21,7 +26,7 @@ export function Workouts() {
         renderItem={({ item }) => (
           <GenericCard 
             title={item.name} 
-            subtitle={item.exercises.length + ' exercícios'}
+            subtitle={item?.totalExercises + ' exercícios'}
             withFeedBack
             children={<DescriptionText>{item.description}</DescriptionText>}
           />

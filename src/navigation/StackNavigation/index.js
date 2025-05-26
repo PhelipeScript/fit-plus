@@ -5,13 +5,16 @@ import { SplashScreen } from "../../screens/SplashScreen";
 import { BottomTabsNavigation } from "../BottomTabsNavigation";
 import { NewWorkout } from "../../screens/NewWorkout";
 import { UserProvider } from '../../contexts/UserContext'
+import { WorkoutProvider } from "../../contexts/WorkoutContext";
 
 const Stack = createNativeStackNavigator()
 
 function PrivateBottomTabs() {
   return (
     <UserProvider>
-      <BottomTabsNavigation />
+      <WorkoutProvider>
+        <BottomTabsNavigation />
+      </WorkoutProvider>
     </UserProvider>
   )
 }
@@ -19,7 +22,9 @@ function PrivateBottomTabs() {
 function PrivateNewWorkout() {
   return (
     <UserProvider>
-      <NewWorkout />
+      <WorkoutProvider>
+        <NewWorkout />
+      </WorkoutProvider>
     </UserProvider>
   )
 }
