@@ -137,3 +137,28 @@ export async function createNewExercise(workoutId, exercise) {
     throw error;
   }
 }
+
+/**
+ * Busca todos os exercícios de um treino específico
+ * @param {string} workoutId 
+ * @returns {Promise<ExerciseProps[]>}
+ */
+export async function getExercisesByWorkout(workoutId) {
+  try {
+    const userId = auth.currentUser?.uid
+    const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
+
+    const snapshot = await getDocs(exercisesRef);
+
+    /** @type {ExerciseProps[]} */
+    const exercises = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return exercises;
+  } catch (error) {
+    console.error("Erro ao buscar exercícios:", error);
+    throw error;
+  }
+}

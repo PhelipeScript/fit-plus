@@ -15,10 +15,13 @@
  * @property {(workouts: WorkoutProps[]) => void} setWorkouts 
  * @property {WorkoutProps} currentWorkout
  * @property {(workouts: WorkoutProps) => void} setCurrentWorkout 
+ * @property {ExerciseProps[]} exercisesCurrentWorkout
+ * @property {(exercises: ExerciseProps[]) => void} setExercisesCurrentWorkout 
  * @property {() => Promise<void>} fetchWorkouts 
  * @exports WorkoutContextProps
  * 
  * @typedef {Object} ExerciseProps
+ * @property {string} id
  * @property {string} name 
  * @property {number} series 
  * @property {number} repetitions 

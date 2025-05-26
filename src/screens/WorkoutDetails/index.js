@@ -12,9 +12,8 @@ import { ActivityIndicator } from "react-native-paper";
 export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
-  const { currentWorkout } = useWorkouts() 
+  const { currentWorkout, exercisesCurrentWorkout: exercises } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
-  const exercises = [] 
 
   function goToNewExercise() {
     navigation.push('NewExercise')
