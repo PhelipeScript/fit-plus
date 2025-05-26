@@ -2,6 +2,7 @@ import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc 
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
+/** @typedef {import('../types/workoutProps')} */
 
 /**
  * Cria um novo usuário no Firestore.
@@ -76,15 +77,15 @@ export async function updateUser(user) {
 
 /**
  * Adiciona um novo treino à subcoleção "workouts" do usuário autenticado.
- * @param {object} workout
+ * @param {WorkoutProps} workout
  * @returns {Promise<void>} 
  */
-export async function createNewWorkout(workoutData) {
+export async function createNewWorkout(workout) {
   try {
     const userId = auth.currentUser?.uid;
     const userWorkoutsRef = collection(db, `users/${userId}/workouts`);
     await addDoc(userWorkoutsRef, {
-      ...workoutData,
+      ...workout,
       createdAt: Timestamp.now(),
     })
   } catch (error) {
@@ -96,7 +97,7 @@ export async function createNewWorkout(workoutData) {
 /**
  * Busca todos os treinos de um usuário no Firestore.
  * @param {string?} userId 
- * @returns {Promise<Array>}
+ * @returns {Promise<WorkoutProps[]>}
  */
 export async function getUserWorkouts(userId) {
   try {
@@ -106,6 +107,7 @@ export async function getUserWorkouts(userId) {
     const workoutsRef = collection(db, `users/${userId}/workouts`);
     const snapshot = await getDocs(workoutsRef);
 
+    /** @type {WorkoutProps[]} */
     const workouts = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
@@ -115,5 +117,23 @@ export async function getUserWorkouts(userId) {
   } catch (error) {
     console.error('Erro ao buscar treinos:', error);
     throw new Error('Não foi possível carregar os treinos.');
+  }
+}
+
+/**
+ * Adiciona um novo exercício a um treino do usuário no Firestore.
+ * 
+ * @param {string} workoutId 
+ * @param {ExerciseProps} exercise 
+ * @returns {Promise<void>}
+ */
+export async function createNewExercise(workoutId, exercise) {
+  try {
+    const userId = auth.currentUser?.uid
+    const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
+    await addDoc(exercisesRef, exercise);
+  } catch (error) {
+    console.error("Erro ao adicionar exercício:", error);
+    throw error;
   }
 }

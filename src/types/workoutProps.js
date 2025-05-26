@@ -6,12 +6,24 @@
  * @property {'Diariamente'| '3x por semana'| '2x por semana'| '1x por semana'} frequency 
  * @property {string} kcal 
  * @property {'Iniciante', 'Intermediário', 'Avançado'} level 
+ * @property {number} totalExercises
  * @property {Date} createdAt 
  * @exports WorkoutProps
  * 
  * @typedef {Object} WorkoutContextProps
  * @property {WorkoutProps[]} workouts
  * @property {(workouts: WorkoutProps[]) => void} setWorkouts 
+ * @property {WorkoutProps} currentWorkout
+ * @property {(workouts: WorkoutProps) => void} setCurrentWorkout 
  * @property {() => Promise<void>} fetchWorkouts 
  * @exports WorkoutContextProps
+ * 
+ * @typedef {Object} ExerciseProps
+ * @property {string} name 
+ * @property {number} series 
+ * @property {number} repetitions 
+ * @property {number} weight 
+ * @property {"Peito" | "Costas" | "Bíceps" | "Tríceps" | "Ombros" | "Abdômen" | "Pernas" | "Glúteos"} muscleGroup 
+ * @property {string?} notes 
+ * @exports ExerciseProps
  */
