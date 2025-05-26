@@ -12,6 +12,14 @@ export function Workouts() {
     navigation.push('NewWorkout')
   }
 
+  /**
+   * 
+   * @param {string} workoutId 
+   */
+  function goToDetails(workoutId) {
+    navigation.push('WorkoutDetails', { workoutId })
+  }
+
   useFocusEffect(useCallback(() => {
     fetchWorkouts()
   }, []))
@@ -29,6 +37,7 @@ export function Workouts() {
             subtitle={item?.totalExercises + ' exercícios'}
             withFeedBack
             children={<DescriptionText>{item.description}</DescriptionText>}
+            onPress={() => goToDetails(item.id)}
           />
         )}
         ListEmptyComponent={(

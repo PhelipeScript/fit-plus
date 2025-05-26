@@ -6,6 +6,7 @@ import { BottomTabsNavigation } from "../BottomTabsNavigation";
 import { NewWorkout } from "../../screens/NewWorkout";
 import { UserProvider } from '../../contexts/UserContext'
 import { WorkoutProvider } from "../../contexts/WorkoutContext";
+import { WorkoutDetails } from "../../screens/WorkoutDetails";
 
 const Stack = createNativeStackNavigator()
 
@@ -29,6 +30,16 @@ function PrivateNewWorkout() {
   )
 }
 
+function PrivateWorkoutDetails() {
+  return (
+    <UserProvider>
+      <WorkoutProvider>
+        <WorkoutDetails />
+      </WorkoutProvider>
+    </UserProvider>
+  )
+}
+
 export function StackNavigation() {
   return (
     <Stack.Navigator 
@@ -46,6 +57,15 @@ export function StackNavigation() {
           headerShown: true, 
           headerTitleAlign: 'center', 
           title: 'Novo Treino' 
+        }} 
+      />
+      
+      <Stack.Screen 
+        name="WorkoutDetails" 
+        component={PrivateWorkoutDetails} 
+        options={{ 
+          headerShown: true, 
+          title: '',
         }} 
       />
     </Stack.Navigator>
