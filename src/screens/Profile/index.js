@@ -32,7 +32,6 @@ export function Profile() {
     setIsLoading(true)
     try {
       await signOut()
-      navigation.replace('SplashScreen')
     } catch (error) {
       console.error(error)
       alert(error.message)

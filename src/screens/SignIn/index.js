@@ -46,7 +46,6 @@ export function SignIn() {
     try {
       await signIn(email, password)
       reset()
-      navigate.replace("BottomTabsNavigation")
     } catch (error) {
       if (error instanceof InvalidCredentialError) {
         setError("password", { type: "manual", message: error.message });
