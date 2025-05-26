@@ -65,7 +65,8 @@ export function StackNavigation() {
         component={PrivateWorkoutDetails} 
         options={{ 
           headerShown: true, 
-          title: '',
+          title: 'Detalhes do treino',
+          headerTitleAlign: 'center',
         }} 
       />
     </Stack.Navigator>
