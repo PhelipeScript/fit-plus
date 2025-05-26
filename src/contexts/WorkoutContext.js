@@ -11,6 +11,7 @@ export const WorkoutContext = createContext(null)
  */
 export function WorkoutProvider({ children }) {
   const [workouts, setWorkouts] = useState(/** @type {WorkoutProps[]} */([]))
+  const [currentWorkout, setCurrentWorkout] = useState(/** @type {WorkoutProps | null} */(null))
 
   /**
    * Busca todos os treinos do usuário autenticado.
@@ -30,7 +31,7 @@ export function WorkoutProvider({ children }) {
   }, []);
 
   return (
-    <WorkoutContext.Provider value={{ workouts, setWorkouts, fetchWorkouts }}>
+    <WorkoutContext.Provider value={{ workouts, setWorkouts, fetchWorkouts, currentWorkout, setCurrentWorkout }}>
       {children}
     </WorkoutContext.Provider>
   )

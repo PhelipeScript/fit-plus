@@ -1,6 +1,6 @@
 import { TouchableOpacity } from "react-native";
 import { Container, DescriptionText, EmptyIcon, EmptyText, ExerciseCard, ExerciseCheckbox, ExerciseCheckboxMarked, ExerciseInfoText, ExerciseList, ExerciseListEmpty, ExerciseTitle, Header, Main, TabsContainer, TabText, TabTextWrapper } from "./styles";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useWorkouts } from "../../hooks/useWorkouts";
 import { useTheme } from "styled-components/native";
@@ -12,17 +12,16 @@ import { ActivityIndicator } from "react-native-paper";
 export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
-  /** @type {{ params: { workoutId: string } }} */
-  const { params: { workoutId } } = useRoute()
-  const { workouts } = useWorkouts() 
-  const [workout, setWorkout] = useState(/** @type {WorkoutProps | null} */(null))
+  const { currentWorkout } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
   const exercises = [] 
 
+  function goToNewExercise() {
+    navigation.push('NewExercise')
+  }
+
   useEffect(() => {
-    const currentWorkout = workouts.find(w => w.id === workoutId);
     if (currentWorkout) {
-      setWorkout(currentWorkout);
       navigation.setOptions({
         title: currentWorkout.name,
         headerTitleStyle: {
@@ -31,12 +30,12 @@ export function WorkoutDetails() {
         }
       })
     }
-  }, [workoutId, workouts])
+  }, [currentWorkout])
 
-  return workout ? (
+  return currentWorkout ? (
     <Container>
       <Header>
-        <DescriptionText>{workout?.description}</DescriptionText>
+        <DescriptionText>{currentWorkout.description}</DescriptionText>
       </Header>
 
       <TabsContainer>
@@ -80,6 +79,7 @@ export function WorkoutDetails() {
           title="Adicionar exercício"
           icon={Plus}
           type="SECONDARY"
+          onPress={goToNewExercise}
         />
 
         <CustomButton 

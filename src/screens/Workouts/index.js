@@ -6,7 +6,7 @@ import { useCallback } from "react";
 
 export function Workouts() {
   const navigation = useNavigation()
-  const { workouts, fetchWorkouts } = useWorkouts()
+  const { workouts, fetchWorkouts, setCurrentWorkout } = useWorkouts()
 
   function goToNewWorkout() {
     navigation.push('NewWorkout')
@@ -14,13 +14,15 @@ export function Workouts() {
 
   /**
    * 
-   * @param {string} workoutId 
+   * @param {WorkoutProps} workout
    */
-  function goToDetails(workoutId) {
-    navigation.push('WorkoutDetails', { workoutId })
+  function goToDetails(workout) {
+    setCurrentWorkout(workout)
+    navigation.push('WorkoutDetails')
   }
 
   useFocusEffect(useCallback(() => {
+    setCurrentWorkout(null)
     fetchWorkouts()
   }, []))
 
@@ -37,7 +39,7 @@ export function Workouts() {
             subtitle={item?.totalExercises + ' exercícios'}
             withFeedBack
             children={<DescriptionText>{item.description}</DescriptionText>}
-            onPress={() => goToDetails(item.id)}
+            onPress={() => goToDetails(item)}
           />
         )}
         ListEmptyComponent={(
