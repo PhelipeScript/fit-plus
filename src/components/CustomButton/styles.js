@@ -22,7 +22,7 @@ export const Container = styled.TouchableOpacity`
 export const Title = styled.Text`
     ${({ theme, type }) => css`
         font-family: ${theme.fontFamily.bold};
-        font-size: ${theme.fontSizes.xl};
+        font-size: ${theme.fontSizes.lg};
         color: ${
             type === 'SECONDARY'
             ? theme.colors.primary
