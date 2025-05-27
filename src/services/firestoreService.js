@@ -166,6 +166,32 @@ export async function updateTotalExercisesWorkout(workoutId, type) {
 }
 
 /**
+ * Busca um treino específico do Firestore.
+ * 
+ * @param {string} workoutId - ID do treino
+ * @returns {Promise<WorkoutProps | null>}
+ */
+export async function getWorkout(workoutId) {
+  try {
+    const userId = auth.currentUser?.uid
+    const docRef = doc(db, `users/${userId}/workouts/${workoutId}`);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return {
+        id: docSnap.id,
+        ...docSnap.data(),
+      };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar treino:", error);
+    throw error;
+  }
+}
+
+/**
  * Busca todos os treinos de um usuário no Firestore.
  * @param {string?} userId 
  * @returns {Promise<WorkoutProps[]>}

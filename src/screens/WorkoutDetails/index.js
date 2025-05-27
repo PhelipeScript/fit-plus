@@ -1,7 +1,7 @@
 import { TouchableOpacity } from "react-native";
 import { Container, DescriptionText, EmptyIcon, EmptyText, ExerciseCard, ExerciseCheckbox, ExerciseCheckboxMarked, ExerciseInfoText, ExerciseList, ExerciseListEmpty, ExerciseTitle, Header, InfoContainer, Main, TabsContainer, TabText, TabTextWrapper } from "./styles";
-import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 import { useWorkouts } from "../../hooks/useWorkouts";
 import { useTheme } from "styled-components/native";
 import { Divider } from './../../components/Divider/index';
@@ -15,7 +15,7 @@ export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
   const [isRemoving, setIsRemoving] = useState(false)
-  const { currentWorkout, exercisesCurrentWorkout: exercises } = useWorkouts() 
+  const { currentWorkout, exercisesCurrentWorkout: exercises, getCurrentWorkoutUpdated } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
 
   function goToNewExercise() {
@@ -50,6 +50,10 @@ export function WorkoutDetails() {
       })
     }
   }, [currentWorkout])
+
+  useFocusEffect(useCallback(() => {
+    getCurrentWorkoutUpdated()
+  }, []))
 
   return currentWorkout ? (
     <Container>

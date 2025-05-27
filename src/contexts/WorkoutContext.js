@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { getExercisesByWorkout, getUserWorkouts } from '../services/firestoreService'
+import { getExercisesByWorkout, getUserWorkouts, getWorkout } from '../services/firestoreService'
 /** @typedef {import('../types/workoutProps').WorkoutContextProps} */
 
 /** @type {import("react").Context<WorkoutContextProps>} */
@@ -36,10 +36,23 @@ export function WorkoutProvider({ children }) {
     }
   }
 
+  async function getCurrentWorkoutUpdated() {
+    try {
+      const data = await getWorkout(currentWorkout.id)
+      setCurrentWorkout(data);
+
+      const workoutsUpdated = workouts.filter(w => w.id !== currentWorkout.id)
+      workoutsUpdated.push(data)
+      setWorkouts(workoutsUpdated)
+    } catch (error) {
+      console.error('Erro ao buscar o treino atual', error)
+    }
+  }
+
   useEffect(() => {
     fetchWorkouts();
   }, []);
-
+  
   useEffect(() => {
     if (currentWorkout) {
       fetchExercisesCurrentWorkout()
@@ -57,7 +70,8 @@ export function WorkoutProvider({ children }) {
         currentWorkout, 
         setCurrentWorkout,
         exercisesCurrentWorkout,
-        setExercisesCurrentWorkout
+        setExercisesCurrentWorkout,
+        getCurrentWorkoutUpdated
       }}
     >
       {children}

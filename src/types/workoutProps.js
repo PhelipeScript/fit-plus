@@ -19,6 +19,7 @@
  * @property {ExerciseProps[]} exercisesCurrentWorkout
  * @property {(exercises: ExerciseProps[]) => void} setExercisesCurrentWorkout 
  * @property {() => Promise<void>} fetchWorkouts 
+ * @property {() => Promise<void>} getCurrentWorkoutUpdated 
  * @exports WorkoutContextProps
  * 
  * @typedef {Object} ExerciseProps
