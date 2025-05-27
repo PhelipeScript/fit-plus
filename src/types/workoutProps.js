@@ -8,6 +8,7 @@
  * @property {'Iniciante' | 'Intermediário' | 'Avançado'} level 
  * @property {number} totalExercises
  * @property {string} createdAt 
+ * @property {string} updatedAt 
  * @exports WorkoutProps
  * 
  * @typedef {Object} WorkoutContextProps

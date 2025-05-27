@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
@@ -84,11 +84,13 @@ export async function updateUser(user) {
  */
 export async function createNewWorkout(workout) {
   try {
+    const now = new Date().toISOString();
     const userId = auth.currentUser?.uid;
     const userWorkoutsRef = collection(db, `users/${userId}/workouts`);
     await addDoc(userWorkoutsRef, {
       ...workout,
-      createdAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     })
   } catch (error) {
     console.error('Erro ao adicionar treino:', error);
@@ -117,6 +119,28 @@ export async function deleteWorkout(workoutId) {
   } catch (error) {
     console.error(error)
     throw new Error('Não foi possível deletar o treino.')
+  }
+}
+
+/**
+ * Atualiza o campo `totalExercises` do treino ao adicionar ou remover um exercício.
+ * 
+ * @param {string} workoutId 
+ * @param {'increment' | 'decrement'} type 
+ */
+export async function updateTotalExercisesWorkout(workoutId, type) {
+  try {
+    const userId = auth.currentUser?.uid
+    const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
+    
+    await updateDoc(workoutRef, {
+      totalExercises: increment(type === 'increment' ? 1 : -1),
+      updatedAt: new Date().toISOString(), 
+    });
+
+  } catch (error) {
+    console.error("Erro ao atualizar total de exercícios:", error);
+    throw error;
   }
 }
 
@@ -158,6 +182,7 @@ export async function createNewExercise(workoutId, exercise) {
     const userId = auth.currentUser?.uid
     const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
     await addDoc(exercisesRef, {...exercise, createdAt: new Date().toISOString()});
+    await updateTotalExercisesWorkout(workoutId, 'increment');
   } catch (error) {
     console.error("Erro ao adicionar exercício:", error);
     throw error;
