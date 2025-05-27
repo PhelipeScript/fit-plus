@@ -115,42 +115,36 @@ export function WorkoutDetails() {
         <Main>
           <InfoContainer>
             <InfoCard
-              onPress={() => console.log('Nome')} 
               icon={Info} 
               title="Nome" 
               value={currentWorkout.name}  
             />
 
             <InfoCard
-              onPress={() => console.log('Frequência')} 
               icon={CalendarDots} 
               title="Frequência" 
               value={currentWorkout.frequency}  
             />
 
             <InfoCard
-              onPress={() => console.log('Calorias')} 
               icon={Fire} 
               title="Calorias" 
               value={`${currentWorkout.kcal} kcal`}  
             />
 
             <InfoCard
-              onPress={() => console.log('Nível')} 
               icon={Heartbeat} 
               title="Nível" 
               value={currentWorkout.level}  
             />
 
             <InfoCard
-              onPress={() => console.log('Total de treinos')} 
               icon={Barbell} 
               title="Total de exercícios" 
               value={currentWorkout.totalExercises}  
             />
 
             <InfoCard
-              onPress={() => console.log('Data de criação')} 
               icon={Calendar} 
               title="Data de criação" 
               value={new Date(currentWorkout.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}  
