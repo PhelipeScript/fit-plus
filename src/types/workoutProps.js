@@ -5,7 +5,7 @@
  * @property {string} description 
  * @property {'Diariamente'| '3x por semana'| '2x por semana'| '1x por semana'} frequency 
  * @property {string} kcal 
- * @property {'Iniciante', 'Intermediário', 'Avançado'} level 
+ * @property {'Iniciante' | 'Intermediário' | 'Avançado'} level 
  * @property {number} totalExercises
  * @property {Date} createdAt 
  * @exports WorkoutProps

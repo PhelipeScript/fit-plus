@@ -126,3 +126,7 @@ export const ExerciseCheckboxMarked = styled(CheckSquare).attrs(({ theme }) => (
   color: theme.colors.primary,
   weight: 'fill',
 }))``
+
+export const InfoContainer = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})``
