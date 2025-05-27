@@ -11,8 +11,8 @@
  * @property {'male' | 'female' | null} [gender]
  * @property {'gain' | 'lose' | 'maintain' | null} [goal]
  * @property {'low' | 'medium' | 'high' | null} [activityLevel]
- * @property {Date?} [createdAt]
- * @property {Date?} [updatedAt]
+ * @property {string} [createdAt]
+ * @property {string} [updatedAt]
  * @exports UserProps 
  * 
  * 

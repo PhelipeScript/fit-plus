@@ -12,6 +12,8 @@ import { UserNotFoundError } from '../errors/UserNotFoundError';
 export async function createUser({ uid, name, email }) {
   const userRef = doc(db, 'users', uid);
 
+  const now = new Date().toISOString()
+
   await setDoc(userRef, {
     uid,
     name,
@@ -25,8 +27,8 @@ export async function createUser({ uid, name, email }) {
     goal: '',
     activityLevel: '',
 
-    createdAt: Timestamp.now(),
-    updatedAt: Timestamp.now(),
+    createdAt: now,
+    updatedAt: now,
   });
 }
 
@@ -68,7 +70,7 @@ export async function getUser(uid) {
 export async function updateUser(user) {
   try {
     const userRef = doc(db, "users", user.uid);
-    await updateDoc(userRef, {...user, updatedAt: Timestamp.now()});
+    await updateDoc(userRef, {...user, updatedAt: new Date().toISOString()});
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
     throw new Error("Não foi possível atualizar os dados do usuário.");
@@ -86,7 +88,7 @@ export async function createNewWorkout(workout) {
     const userWorkoutsRef = collection(db, `users/${userId}/workouts`);
     await addDoc(userWorkoutsRef, {
       ...workout,
-      createdAt: Timestamp.now(),
+      createdAt: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Erro ao adicionar treino:', error);
@@ -150,7 +152,7 @@ export async function createNewExercise(workoutId, exercise) {
   try {
     const userId = auth.currentUser?.uid
     const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
-    await addDoc(exercisesRef, exercise);
+    await addDoc(exercisesRef, {...exercise, createdAt: new Date().toISOString()});
   } catch (error) {
     console.error("Erro ao adicionar exercício:", error);
     throw error;

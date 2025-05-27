@@ -7,7 +7,7 @@
  * @property {string} kcal 
  * @property {'Iniciante' | 'Intermediário' | 'Avançado'} level 
  * @property {number} totalExercises
- * @property {Date} createdAt 
+ * @property {string} createdAt 
  * @exports WorkoutProps
  * 
  * @typedef {Object} WorkoutContextProps
@@ -28,5 +28,6 @@
  * @property {number} weight 
  * @property {"Peito" | "Costas" | "Bíceps" | "Tríceps" | "Ombros" | "Abdômen" | "Pernas" | "Glúteos"} muscleGroup 
  * @property {string?} notes 
+ * @property {string} createdAt 
  * @exports ExerciseProps
  */

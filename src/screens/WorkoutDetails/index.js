@@ -145,7 +145,7 @@ export function WorkoutDetails() {
               onPress={() => console.log('Data de criação')} 
               icon={Calendar} 
               title="Data de criação" 
-              value={new Date(currentWorkout.createdAt.seconds * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}  
+              value={new Date(currentWorkout.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}  
             />
           </InfoContainer>
 
