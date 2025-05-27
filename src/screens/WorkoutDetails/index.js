@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Container, DescriptionText, EmptyIcon, EmptyText, ExerciseCard, ExerciseCheckbox, ExerciseCheckboxMarked, ExerciseInfoText, ExerciseList, ExerciseListEmpty, ExerciseTitle, Header, InfoContainer, Main, TabsContainer, TabText, TabTextWrapper } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
@@ -9,15 +9,30 @@ import { CustomButton } from './../../components/CustomButton/index';
 import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, Plus, Trash,  } from "phosphor-react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
+import { deleteWorkout } from "../../services/firestoreService";
 
 export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
+  const [isRemoving, setIsRemoving] = useState(false)
   const { currentWorkout, exercisesCurrentWorkout: exercises } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
 
   function goToNewExercise() {
     navigation.push('NewExercise')
+  }
+
+  async function handleDeleteWorkout() {
+    setIsRemoving(true)
+    try {
+      // no futuro vou adicionar um modal de confirmação antes
+      await deleteWorkout(currentWorkout.id)
+      navigation.goBack()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsRemoving(false)
+    }
   }
 
   useEffect(() => {
@@ -144,6 +159,8 @@ export function WorkoutDetails() {
             title="Remover treino"
             icon={Trash}
             type="DANGER"
+            isLoading={isRemoving}
+            onPress={handleDeleteWorkout}
           />
         </Main>
       )}

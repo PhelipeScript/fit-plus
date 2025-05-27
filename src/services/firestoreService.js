@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
@@ -92,6 +92,25 @@ export async function createNewWorkout(workout) {
     console.error('Erro ao adicionar treino:', error);
     throw new Error('Não foi possível adicionar o treino.');
   }
+}
+
+/**
+ * Deleta um treino e todos os seus exercícios.
+ * 
+ * @param {string} workoutId
+ * @returns {Promise<void>}
+ */
+export async function deleteWorkout(workoutId) {
+  const userId = auth.currentUser?.uid;
+
+  const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
+  const snapshot = await getDocs(exercisesRef);
+
+  const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+  await Promise.all(deletePromises);
+
+  const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
+  await deleteDoc(workoutRef);
 }
 
 /**
