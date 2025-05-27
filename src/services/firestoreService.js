@@ -103,16 +103,21 @@ export async function createNewWorkout(workout) {
  * @returns {Promise<void>}
  */
 export async function deleteWorkout(workoutId) {
-  const userId = auth.currentUser?.uid;
+  try {
+    const userId = auth.currentUser?.uid;
 
-  const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
-  const snapshot = await getDocs(exercisesRef);
+    const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
+    const snapshot = await getDocs(exercisesRef);
 
-  const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
-  await Promise.all(deletePromises);
+    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deletePromises);
 
-  const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
-  await deleteDoc(workoutRef);
+    const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
+    await deleteDoc(workoutRef);
+  } catch (error) {
+    console.error(error)
+    throw new Error('Não foi possível deletar o treino.')
+  }
 }
 
 /**
