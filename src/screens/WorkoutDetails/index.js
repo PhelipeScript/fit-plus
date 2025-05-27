@@ -10,6 +10,7 @@ import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, P
 import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
 import { deleteWorkout } from "../../services/firestoreService";
+import { ExerciseDetailsModal } from "../../components/modals/ExerciseDetailsModal";
 
 export function WorkoutDetails() {
   const theme = useTheme()
@@ -17,6 +18,8 @@ export function WorkoutDetails() {
   const [isRemoving, setIsRemoving] = useState(false)
   const { currentWorkout, exercisesCurrentWorkout: exercises, getCurrentWorkoutUpdated } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   function goToNewExercise() {
     navigation.push('NewExercise')
@@ -24,6 +27,11 @@ export function WorkoutDetails() {
   
   function goToEditWorkout() {
     navigation.push('EditWorkout')
+  }
+
+  function handleOpenModal(exercise) {
+    setSelectedExercise(exercise);
+    setModalVisible(true);
   }
 
   async function handleDeleteWorkout() {
@@ -77,7 +85,7 @@ export function WorkoutDetails() {
             data={exercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard>
+              <ExerciseCard onPress={() => handleOpenModal(item)}>
                 <ExerciseTitle>{item.name}</ExerciseTitle>
                 <ExerciseInfoText>{item.repetitions} rep</ExerciseInfoText>
                 <Divider vertical />
@@ -109,6 +117,12 @@ export function WorkoutDetails() {
           <CustomButton 
             title="Iniciar treino"
             icon={Play}
+          />
+
+          <ExerciseDetailsModal
+            visible={modalVisible} 
+            onDismiss={() => setModalVisible(false)} 
+            exercise={selectedExercise} 
           />
         </Main>
       ) : (
