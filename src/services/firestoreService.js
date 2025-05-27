@@ -99,6 +99,27 @@ export async function createNewWorkout(workout) {
 }
 
 /**
+ * Atualiza um treino no Firestore com os dados fornecidos.
+ * 
+ * @param {string} workoutId 
+ * @param {Partial<WorkoutProps>} updatedWorkout 
+ * @returns {Promise<void>}
+ */
+export async function updateWorkout(workoutId, updatedWorkout) {
+  try {
+    const userId = auth.currentUser?.uid
+    const workoutRef = doc(db, `users/${userId}/workouts/${workoutId}`);
+    await updateDoc(workoutRef, {
+      ...updatedWorkout,
+      updatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar treino:", error);
+    throw error;
+  }
+}
+
+/**
  * Deleta um treino e todos os seus exercícios.
  * 
  * @param {string} workoutId

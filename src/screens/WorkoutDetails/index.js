@@ -21,6 +21,10 @@ export function WorkoutDetails() {
   function goToNewExercise() {
     navigation.push('NewExercise')
   }
+  
+  function goToEditWorkout() {
+    navigation.push('EditWorkout')
+  }
 
   async function handleDeleteWorkout() {
     setIsRemoving(true)
@@ -153,6 +157,7 @@ export function WorkoutDetails() {
             title="Editar treino"
             icon={Pencil}
             type="SECONDARY"
+            onPress={goToEditWorkout}
           />
 
           <CustomButton 
