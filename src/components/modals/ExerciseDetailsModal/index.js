@@ -7,6 +7,7 @@ import { useWorkouts } from "../../../hooks/useWorkouts";
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { deleteExercise } from "../../../services/firestoreService";
+import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 
 /**
  * @param {{
@@ -18,6 +19,7 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
   const navigation = useNavigation()
   const { currentExercise: exercise, currentWorkout } = useWorkouts()
   const [isDeleting, setIsDeleting] = useState(false)
+  const [delConfirmModalVisible, setDelConfirmModalVisible] = useState(false)
   if (!exercise) return null;
 
 
@@ -27,6 +29,7 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
   }
 
   async function handleDeleteExercise() {
+    setDelConfirmModalVisible(false)
     setIsDeleting(true)
     try {
       await deleteExercise(currentWorkout.id, exercise.id)
@@ -39,89 +42,98 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
   }
 
   return (
-    <Portal>
-      <ModalContainer
-        visible={visible}
-        onDismiss={onDismiss}
-      >
-        <Title variant="titleMedium">{exercise.name}</Title>
-        <ContentContainer>
-            <InfoWrapper>
-                <InfoCard
-                icon={ListNumbers} 
-                title="Séries" 
-                value={`${exercise.series}x`}  
-                style={{ flex: 1 }}
-                />
-                
-                <InfoCard
-                icon={Repeat} 
-                title="Repetições" 
-                value={`${exercise.repetitions} rep`}  
-                style={{ flex: 1 }}
-                />
-            </InfoWrapper>
+    <>
+      <Portal>
+        <ModalContainer
+          visible={visible}
+          onDismiss={onDismiss}
+        >
+          <Title variant="titleMedium">{exercise.name}</Title>
+          <ContentContainer>
+              <InfoWrapper>
+                  <InfoCard
+                  icon={ListNumbers} 
+                  title="Séries" 
+                  value={`${exercise.series}x`}  
+                  style={{ flex: 1 }}
+                  />
+                  
+                  <InfoCard
+                  icon={Repeat} 
+                  title="Repetições" 
+                  value={`${exercise.repetitions} rep`}  
+                  style={{ flex: 1 }}
+                  />
+              </InfoWrapper>
 
-            <InfoWrapper>
-                <InfoCard
-                icon={Barbell} 
-                title="Peso" 
-                value={`${exercise.weight} kg`}  
-                style={{ flex: 1 }}
-                />
-                
-                <InfoCard
-                icon={Person} 
-                title="Grupo muscular" 
-                value={exercise.muscleGroup}  
-                style={{ flex: 1 }}
-                />
-            </InfoWrapper>
+              <InfoWrapper>
+                  <InfoCard
+                  icon={Barbell} 
+                  title="Peso" 
+                  value={`${exercise.weight} kg`}  
+                  style={{ flex: 1 }}
+                  />
+                  
+                  <InfoCard
+                  icon={Person} 
+                  title="Grupo muscular" 
+                  value={exercise.muscleGroup}  
+                  style={{ flex: 1 }}
+                  />
+              </InfoWrapper>
 
-            <InfoWrapper>
-                <InfoCard
-                icon={Calendar} 
-                title="Data de criação" 
-                value={new Date(exercise.createdAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
-                style={{ flex: 1 }}
-                />
+              <InfoWrapper>
+                  <InfoCard
+                  icon={Calendar} 
+                  title="Data de criação" 
+                  value={new Date(exercise.createdAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
+                  style={{ flex: 1 }}
+                  />
 
-                <InfoCard
-                icon={Calendar} 
-                title="Ultima atualização" 
-                value={new Date(exercise.updatedAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
-                style={{ flex: 1 }}
-                />
-            </InfoWrapper>
+                  <InfoCard
+                  icon={Calendar} 
+                  title="Ultima atualização" 
+                  value={new Date(exercise.updatedAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
+                  style={{ flex: 1 }}
+                  />
+              </InfoWrapper>
 
-            <NotesWrapper>
-                <Label>Observações</Label>
-                <NotesText>{exercise.notes || "Nenhuma observação"}</NotesText>
-            </NotesWrapper>
-        </ContentContainer>
+              <NotesWrapper>
+                  <Label>Observações</Label>
+                  <NotesText>{exercise.notes || "Nenhuma observação"}</NotesText>
+              </NotesWrapper>
+          </ContentContainer>
 
-        <CustomButton 
-            title="Editar Exercício"
-            icon={Pencil}
-            type="SECONDARY"
-            style={{ marginTop: 10, }}
-            onPress={goToEditExercise}
-        />
+          <CustomButton 
+              title="Editar Exercício"
+              icon={Pencil}
+              type="SECONDARY"
+              style={{ marginTop: 10, }}
+              onPress={goToEditExercise}
+          />
 
-        <CustomButton 
-            title="Remover Exercício"
-            icon={Trash}
-            type="DANGER"
-            isLoading={isDeleting}
-            onPress={handleDeleteExercise}
-        />
-        {/* Só vai ter esse se tiver iniciado o treino
-        <CustomButton 
-            title="Marcar como concluído"
-            icon={CheckFat}
-            type="SUCCESS"
-        /> */}
-      </ModalContainer>
-    </Portal>
+          <CustomButton 
+              title="Remover Exercício"
+              icon={Trash}
+              type="DANGER"
+              isLoading={isDeleting}
+              onPress={() => setDelConfirmModalVisible(true)}
+          />
+          {/* Só vai ter esse se tiver iniciado o treino
+          <CustomButton 
+              title="Marcar como concluído"
+              icon={CheckFat}
+              type="SUCCESS"
+          /> */}
+        </ModalContainer>
+      </Portal>
+
+      <DeleteConfirmationModal
+        visible={delConfirmModalVisible}
+        onCancel={() => setDelConfirmModalVisible(false)}
+        onConfirm={handleDeleteExercise}
+        message="Deseja realmente remover este exercício?"
+      />  
+    </>
   );
 }

@@ -11,6 +11,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
 import { deleteWorkout } from "../../services/firestoreService";
 import { ExerciseDetailsModal } from "../../components/modals/ExerciseDetailsModal";
+import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
 
 export function WorkoutDetails() {
   const theme = useTheme()
@@ -24,7 +25,8 @@ export function WorkoutDetails() {
     fetchExercisesCurrentWorkout,
   } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
-  const [modalVisible, setModalVisible] = useState(false);
+  const [ExerciseDetailsModalVisible, setExerciseDetailsModalVisible] = useState(false);
+  const [delConfirmModalVisible, setDelConfirmModalVisible] = useState(false)
 
   function goToNewExercise() {
     navigation.push('NewExercise')
@@ -34,9 +36,9 @@ export function WorkoutDetails() {
     navigation.push('EditWorkout')
   }
 
-  function handleOpenModal(exercise) {
+  function handleOpenExerciseDetailsModal(exercise) {
     setCurrentExercise(exercise);
-    setModalVisible(true);
+    setExerciseDetailsModalVisible(true);
   }
 
   /**
@@ -44,16 +46,16 @@ export function WorkoutDetails() {
    * @param {'edit' | 'deleted' | null} action
    */
   function handleModalDismiss(action) {
-    setModalVisible(false)
+    setExerciseDetailsModalVisible(false)
     !action && setCurrentExercise(null)
     if (action === 'deleted') 
       fetchExercisesCurrentWorkout()
   }
 
   async function handleDeleteWorkout() {
+    setDelConfirmModalVisible(false)
     setIsRemoving(true)
     try {
-      // no futuro vou adicionar um modal de confirmação antes
       await deleteWorkout(currentWorkout.id)
       navigation.goBack()
     } catch (error) {
@@ -101,7 +103,7 @@ export function WorkoutDetails() {
             data={exercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard onPress={() => handleOpenModal(item)}>
+              <ExerciseCard onPress={() => handleOpenExerciseDetailsModal(item)}>
                 <ExerciseTitle>{item.name}</ExerciseTitle>
                 <ExerciseInfoText>{item.repetitions} rep</ExerciseInfoText>
                 <Divider vertical />
@@ -136,7 +138,7 @@ export function WorkoutDetails() {
           />
 
           <ExerciseDetailsModal
-            visible={modalVisible} 
+            visible={ExerciseDetailsModalVisible} 
             onDismiss={handleModalDismiss} 
           />
         </Main>
@@ -192,7 +194,14 @@ export function WorkoutDetails() {
             icon={Trash}
             type="DANGER"
             isLoading={isRemoving}
-            onPress={handleDeleteWorkout}
+            onPress={() => setDelConfirmModalVisible(true)}
+          />
+
+          <DeleteConfirmationModal
+            visible={delConfirmModalVisible}
+            onCancel={() => setDelConfirmModalVisible(false)}
+            onConfirm={handleDeleteWorkout}
+            message="Deseja realmente remover este treino?"
           />
         </Main>
       )}
