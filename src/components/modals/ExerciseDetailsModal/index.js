@@ -1,19 +1,27 @@
-import React from "react";
 import { Portal } from "react-native-paper";
 import { ContentContainer, InfoWrapper, Label, ModalContainer, NotesText, NotesWrapper, Title } from "./styles";
 import { Barbell, Calendar, ListNumbers, Pencil, Person, Repeat, Trash } from "phosphor-react-native";
 import { InfoCard } from "../../cards/InfoCard";
 import { CustomButton } from "../../CustomButton";
+import { useWorkouts } from "../../../hooks/useWorkouts";
+import { useNavigation } from "@react-navigation/native";
 
 /**
  * @param {{
  *   visible: boolean,
  *   onDismiss: () => void,
- *   exercise: ExerciseProps | null
  * }} props
  */
-export function ExerciseDetailsModal({ visible, onDismiss, exercise }) {
+export function ExerciseDetailsModal({ visible, onDismiss }) {
+  const navigation = useNavigation()
+  const { currentExercise: exercise } = useWorkouts()
   if (!exercise) return null;
+
+
+  function goToEditExercise() {
+    navigation.push('EditExercise')
+    onDismiss(false)
+  }
 
   return (
     <Portal>
@@ -75,6 +83,7 @@ export function ExerciseDetailsModal({ visible, onDismiss, exercise }) {
             icon={Pencil}
             type="SECONDARY"
             style={{ marginTop: 10, }}
+            onPress={goToEditExercise}
         />
 
         <CustomButton 

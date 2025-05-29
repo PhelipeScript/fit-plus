@@ -6,6 +6,7 @@ import { WorkoutProvider } from "../../contexts/WorkoutContext";
 import { WorkoutDetails } from "../../screens/WorkoutDetails";
 import { NewExercise } from "../../screens/NewExercise";
 import { EditWorkout } from "../../screens/EditWorkout";
+import { EditExercise } from "../../screens/EditExercise";
 
 const Stack = createNativeStackNavigator()
 
@@ -57,6 +58,16 @@ export function PrivateNavigation() {
                     headerTitleAlign: 'center',
                     }} 
                 />  
+
+                <Stack.Screen 
+                    name="EditExercise" 
+                    component={EditExercise} 
+                    options={{ 
+                    headerShown: true, 
+                    headerTitleAlign: 'center', 
+                    title: 'Editar Exercício' 
+                    }} 
+                />
             </Stack.Navigator>
         </WorkoutProvider>
     </UserProvider>

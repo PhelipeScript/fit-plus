@@ -237,6 +237,27 @@ export async function createNewExercise(workoutId, exercise) {
 }
 
 /**
+ * Atualiza os dados de um exercício específico de um treino.
+ * 
+ * @param {string} workoutId 
+ * @param {ExerciseProps} editedExercise 
+ * @returns {Promise<void>}
+ */
+export async function updateExercise(workoutId, editedExercise) {
+  try {
+    const userId = auth.currentUser?.uid
+    const exerciseRef = doc(db, `users/${userId}/workouts/${workoutId}/exercises/${editedExercise.id}`);
+    await updateDoc(exerciseRef, {
+      ...editedExercise,
+      updatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar exercício:", error);
+    throw error;
+  }
+}
+
+/**
  * Busca todos os exercícios de um treino específico
  * @param {string} workoutId 
  * @returns {Promise<ExerciseProps[]>}

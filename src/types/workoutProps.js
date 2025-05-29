@@ -16,6 +16,8 @@
  * @property {(workouts: WorkoutProps[]) => void} setWorkouts 
  * @property {WorkoutProps} currentWorkout
  * @property {(workouts: WorkoutProps) => void} setCurrentWorkout 
+ * @property {ExerciseProps} currentExercise
+ * @property {(workouts: ExerciseProps) => void} setCurrentExercise
  * @property {ExerciseProps[]} exercisesCurrentWorkout
  * @property {(exercises: ExerciseProps[]) => void} setExercisesCurrentWorkout 
  * @property {() => Promise<void>} fetchWorkouts 
@@ -31,5 +33,6 @@
  * @property {"Peito" | "Costas" | "Bíceps" | "Tríceps" | "Ombros" | "Abdômen" | "Pernas" | "Glúteos"} muscleGroup 
  * @property {string?} notes 
  * @property {string} createdAt 
+ * @property {string} updatedAt 
  * @exports ExerciseProps
  */

@@ -16,9 +16,13 @@ export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
   const [isRemoving, setIsRemoving] = useState(false)
-  const { currentWorkout, exercisesCurrentWorkout: exercises, getCurrentWorkoutUpdated } = useWorkouts() 
+  const { 
+    currentWorkout, 
+    exercisesCurrentWorkout: exercises, 
+    getCurrentWorkoutUpdated,
+    setCurrentExercise,
+  } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
-  const [selectedExercise, setSelectedExercise] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   function goToNewExercise() {
@@ -30,8 +34,17 @@ export function WorkoutDetails() {
   }
 
   function handleOpenModal(exercise) {
-    setSelectedExercise(exercise);
+    setCurrentExercise(exercise);
     setModalVisible(true);
+  }
+
+  /**
+   * 
+   * @param {boolean} canceled 
+   */
+  function handleModalDismiss(canceled=true) {
+    setModalVisible(false)
+    canceled && setCurrentExercise(null)
   }
 
   async function handleDeleteWorkout() {
@@ -121,8 +134,7 @@ export function WorkoutDetails() {
 
           <ExerciseDetailsModal
             visible={modalVisible} 
-            onDismiss={() => setModalVisible(false)} 
-            exercise={selectedExercise} 
+            onDismiss={handleModalDismiss} 
           />
         </Main>
       ) : (

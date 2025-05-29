@@ -13,6 +13,7 @@ export function WorkoutProvider({ children }) {
   const [workouts, setWorkouts] = useState(/** @type {WorkoutProps[]} */([]))
   const [currentWorkout, setCurrentWorkout] = useState(/** @type {WorkoutProps | null} */(null))
   const [exercisesCurrentWorkout, setExercisesCurrentWorkout] = useState(/** @type {ExerciseProps[]} */([]))
+  const [currentExercise, setCurrentExercise] = useState(/** @type {ExerciseProps | null} */ (null))
 
   /**
    * Busca todos os treinos do usuário autenticado.
@@ -71,7 +72,9 @@ export function WorkoutProvider({ children }) {
         setCurrentWorkout,
         exercisesCurrentWorkout,
         setExercisesCurrentWorkout,
-        getCurrentWorkoutUpdated
+        getCurrentWorkoutUpdated,
+        currentExercise,
+        setCurrentExercise,
       }}
     >
       {children}
