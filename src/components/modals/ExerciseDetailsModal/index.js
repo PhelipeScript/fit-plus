@@ -85,6 +85,13 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
                 value={new Date(exercise.createdAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
                 style={{ flex: 1 }}
                 />
+
+                <InfoCard
+                icon={Calendar} 
+                title="Ultima atualização" 
+                value={new Date(exercise.updatedAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
+                style={{ flex: 1 }}
+                />
             </InfoWrapper>
 
             <NotesWrapper>
