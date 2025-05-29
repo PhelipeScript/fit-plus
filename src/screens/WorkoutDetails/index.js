@@ -6,7 +6,7 @@ import { useWorkouts } from "../../hooks/useWorkouts";
 import { useTheme } from "styled-components/native";
 import { Divider } from './../../components/Divider/index';
 import { CustomButton } from './../../components/CustomButton/index';
-import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, Plus, Trash,  } from "phosphor-react-native";
+import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, Plus, StopCircle, Trash,  } from "phosphor-react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
 import { deleteWorkout } from "../../services/firestoreService";
@@ -19,14 +19,17 @@ export function WorkoutDetails() {
   const [isRemoving, setIsRemoving] = useState(false)
   const { 
     currentWorkout, 
-    exercisesCurrentWorkout: exercises, 
+    exercisesCurrentWorkout, 
     getCurrentWorkoutUpdated,
     setCurrentExercise,
+    currentExercise,
     fetchExercisesCurrentWorkout,
   } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
   const [ExerciseDetailsModalVisible, setExerciseDetailsModalVisible] = useState(false);
   const [delConfirmModalVisible, setDelConfirmModalVisible] = useState(false)
+  const [isRunningWorkout, setIsRunningWorkout] = useState(false)
+  const [sessionExercises, setSessionExercises] = useState(/** @type {ExerciseProps[]} */([]))
 
   function goToNewExercise() {
     navigation.push('NewExercise')
@@ -36,6 +39,27 @@ export function WorkoutDetails() {
     navigation.push('EditWorkout')
   }
 
+  function handleStartWorkout() {
+    if (sessionExercises.length === 0)
+      alert("Adicione pelo menos 1 exercício antes de iniciar o treino.")
+    else
+      setIsRunningWorkout(true)
+  }
+
+  /**
+   * 
+   * @param {ExerciseProps} exercise 
+   */
+  function handleToggleExerciseStatus(exercise) {
+    setSessionExercises(state => state.map(ex => {
+      if (ex.id === exercise.id) {
+        ex.done = !ex.done
+      }
+      return ex
+    }))
+
+  }
+
   function handleOpenExerciseDetailsModal(exercise) {
     setCurrentExercise(exercise);
     setExerciseDetailsModalVisible(true);
@@ -43,13 +67,17 @@ export function WorkoutDetails() {
 
   /**
    * 
-   * @param {'edit' | 'deleted' | null} action
+   * @param {'edit' | 'deleted' | 'done' | null} action
    */
   function handleModalDismiss(action) {
     setExerciseDetailsModalVisible(false)
     !action && setCurrentExercise(null)
     if (action === 'deleted') 
       fetchExercisesCurrentWorkout()
+    else if (action === 'done') {
+      handleToggleExerciseStatus(currentExercise)
+      setCurrentExercise(null)
+    }
   }
 
   async function handleDeleteWorkout() {
@@ -77,6 +105,10 @@ export function WorkoutDetails() {
     }
   }, [currentWorkout])
 
+  useEffect(() => {
+    setSessionExercises(exercisesCurrentWorkout)
+  }, [exercisesCurrentWorkout])
+
   useFocusEffect(useCallback(() => {
     getCurrentWorkoutUpdated()
   }, []))
@@ -100,7 +132,7 @@ export function WorkoutDetails() {
       {currentTab === 'exercise' ? (
         <Main>
           <ExerciseList
-            data={exercises}
+            data={sessionExercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <ExerciseCard onPress={() => handleOpenExerciseDetailsModal(item)}>
@@ -108,9 +140,11 @@ export function WorkoutDetails() {
                 <ExerciseInfoText>{item.repetitions} rep</ExerciseInfoText>
                 <Divider vertical />
                 <ExerciseInfoText>{item.weight} kg</ExerciseInfoText>
-                <TouchableOpacity>
-                  {item.done ? <ExerciseCheckboxMarked /> : <ExerciseCheckbox />}
-                </TouchableOpacity>
+                {isRunningWorkout && (
+                  <TouchableOpacity onPress={() => handleToggleExerciseStatus(item)}>
+                    {item.done ? <ExerciseCheckboxMarked /> : <ExerciseCheckbox />}
+                  </TouchableOpacity>
+                )}
               </ExerciseCard>
             )}
             ListEmptyComponent={(
@@ -119,27 +153,41 @@ export function WorkoutDetails() {
                 <EmptyText>Não há exercícios cadastrados neste treino</EmptyText>
               </ExerciseListEmpty>
             )}
-            contentContainerStyle={exercises.length === 0 
+            contentContainerStyle={sessionExercises.length === 0 
               ? {flex: 1} 
               : { minWidth: '100%', gap: 16, paddingBottom: 60 }
             }
           />
 
-          <CustomButton 
-            title="Adicionar exercício"
-            icon={Plus}
-            type="SECONDARY"
-            onPress={goToNewExercise}
-          />
+          {!isRunningWorkout && (
+            <CustomButton 
+              title="Adicionar exercício"
+              icon={Plus}
+              type="SECONDARY"
+              onPress={goToNewExercise}
+            />
+          )}
 
-          <CustomButton 
-            title="Iniciar treino"
-            icon={Play}
-          />
+          {isRunningWorkout ? (
+            <CustomButton 
+              title="Finalizar treino"
+              icon={StopCircle}
+              type="DANGER"
+              onPress={() => setIsRunningWorkout(false)}
+            />
+          ) : (
+            <CustomButton 
+              title="Iniciar treino"
+              icon={Play}
+              onPress={handleStartWorkout}
+            />
+          )}
 
           <ExerciseDetailsModal
             visible={ExerciseDetailsModalVisible} 
             onDismiss={handleModalDismiss} 
+            isRunningWorkout={isRunningWorkout}
+            onToggleExerciseStatus={handleToggleExerciseStatus}
           />
         </Main>
       ) : (
@@ -178,24 +226,34 @@ export function WorkoutDetails() {
             <InfoCard
               icon={Calendar} 
               title="Data de criação" 
-              value={new Date(currentWorkout.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}  
+              value={new Date(currentWorkout.createdAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
+            />
+
+            <InfoCard
+              icon={Calendar} 
+              title="Última atualização" 
+              value={new Date(currentWorkout.updatedAt).toLocaleDateString('pt-BR', { dateStyle: 'short' })}  
             />
           </InfoContainer>
 
-          <CustomButton 
-            title="Editar treino"
-            icon={Pencil}
-            type="SECONDARY"
-            onPress={goToEditWorkout}
-          />
+          {!isRunningWorkout && (
+            <CustomButton 
+              title="Editar treino"
+              icon={Pencil}
+              type="SECONDARY"
+              onPress={goToEditWorkout}
+            />
+          )}
 
-          <CustomButton 
-            title="Remover treino"
-            icon={Trash}
-            type="DANGER"
-            isLoading={isRemoving}
-            onPress={() => setDelConfirmModalVisible(true)}
-          />
+          {!isRunningWorkout && (
+            <CustomButton 
+              title="Remover treino"
+              icon={Trash}
+              type="DANGER"
+              isLoading={isRemoving}
+              onPress={() => setDelConfirmModalVisible(true)}
+            />
+          )}
 
           <DeleteConfirmationModal
             visible={delConfirmModalVisible}

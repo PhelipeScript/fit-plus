@@ -1,6 +1,6 @@
 import { Portal } from "react-native-paper";
 import { ContentContainer, InfoWrapper, Label, ModalContainer, NotesText, NotesWrapper, Title } from "./styles";
-import { Barbell, Calendar, ListNumbers, Pencil, Person, Repeat, Trash } from "phosphor-react-native";
+import { Barbell, Calendar, CheckFat, ListNumbers, Pencil, Person, Repeat, Trash } from "phosphor-react-native";
 import { InfoCard } from "../../cards/InfoCard";
 import { CustomButton } from "../../CustomButton";
 import { useWorkouts } from "../../../hooks/useWorkouts";
@@ -12,10 +12,11 @@ import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 /**
  * @param {{
  *   visible: boolean,
- *   onDismiss: (action: 'edit' | 'deleted' | null) => void,
+ *   onDismiss: (action: 'edit' | 'deleted' | 'done' | null) => void,
+ *   isRunningWorkout?: boolean
  * }} props
  */
-export function ExerciseDetailsModal({ visible, onDismiss }) {
+export function ExerciseDetailsModal({ visible, onDismiss, isRunningWorkout = false }) {
   const navigation = useNavigation()
   const { currentExercise: exercise, currentWorkout } = useWorkouts()
   const [isDeleting, setIsDeleting] = useState(false)
@@ -26,6 +27,10 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
   function goToEditExercise() {
     navigation.push('EditExercise')
     onDismiss('edit')
+  }
+
+  function handleToggleExerciseStatus() {
+    onDismiss('done')
   }
 
   async function handleDeleteExercise() {
@@ -104,27 +109,34 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
               </NotesWrapper>
           </ContentContainer>
 
-          <CustomButton 
+          {!isRunningWorkout && (
+            <CustomButton 
               title="Editar Exercício"
               icon={Pencil}
               type="SECONDARY"
               style={{ marginTop: 10, }}
               onPress={goToEditExercise}
-          />
+            />
+          )}
 
-          <CustomButton 
+          {!isRunningWorkout && (
+            <CustomButton 
               title="Remover Exercício"
               icon={Trash}
               type="DANGER"
               isLoading={isDeleting}
               onPress={() => setDelConfirmModalVisible(true)}
-          />
-          {/* Só vai ter esse se tiver iniciado o treino
-          <CustomButton 
-              title="Marcar como concluído"
+            />
+          )}
+          
+          {isRunningWorkout && (
+            <CustomButton 
+              title={exercise?.done ? "Desmarcar como concluído" : "Marcar como concluído"}
               icon={CheckFat}
               type="SUCCESS"
-          /> */}
+              onPress={handleToggleExerciseStatus}
+            />
+          )}
         </ModalContainer>
       </Portal>
 
