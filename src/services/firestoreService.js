@@ -228,7 +228,12 @@ export async function createNewExercise(workoutId, exercise) {
   try {
     const userId = auth.currentUser?.uid
     const exercisesRef = collection(db, `users/${userId}/workouts/${workoutId}/exercises`);
-    await addDoc(exercisesRef, {...exercise, createdAt: new Date().toISOString()});
+    const now = new Date().toISOString()
+    await addDoc(exercisesRef, {
+      ...exercise, 
+      createdAt: now,
+      updatedAt: now,
+    });
     await updateTotalExercisesWorkout(workoutId, 'increment');
   } catch (error) {
     console.error("Erro ao adicionar exercício:", error);
@@ -253,6 +258,25 @@ export async function updateExercise(workoutId, editedExercise) {
     });
   } catch (error) {
     console.error("Erro ao atualizar exercício:", error);
+    throw error;
+  }
+}
+
+/**
+ * Deleta um exercício de um treino específico no Firestore.
+ * 
+ * @param {string} workoutId -
+ * @param {string} exerciseId 
+ * @returns {Promise<void>}
+ */
+export async function deleteExercise(workoutId, exerciseId) {
+  try {
+    const userId = auth.currentUser?.uid
+    const exerciseRef = doc(db, `users/${userId}/workouts/${workoutId}/exercises/${exerciseId}`);
+    await deleteDoc(exerciseRef);
+    await updateTotalExercisesWorkout(workoutId, 'decrement')
+  } catch (error) {
+    console.error("Erro ao deletar exercício:", error);
     throw error;
   }
 }

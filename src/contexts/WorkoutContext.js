@@ -68,6 +68,7 @@ export function WorkoutProvider({ children }) {
         workouts, 
         setWorkouts, 
         fetchWorkouts, 
+        fetchExercisesCurrentWorkout,
         currentWorkout, 
         setCurrentWorkout,
         exercisesCurrentWorkout,

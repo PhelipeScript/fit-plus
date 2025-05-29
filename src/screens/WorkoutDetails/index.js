@@ -21,6 +21,7 @@ export function WorkoutDetails() {
     exercisesCurrentWorkout: exercises, 
     getCurrentWorkoutUpdated,
     setCurrentExercise,
+    fetchExercisesCurrentWorkout,
   } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,11 +41,13 @@ export function WorkoutDetails() {
 
   /**
    * 
-   * @param {boolean} canceled 
+   * @param {'edit' | 'deleted' | null} action
    */
-  function handleModalDismiss(canceled=true) {
+  function handleModalDismiss(action) {
     setModalVisible(false)
-    canceled && setCurrentExercise(null)
+    !action && setCurrentExercise(null)
+    if (action === 'deleted') 
+      fetchExercisesCurrentWorkout()
   }
 
   async function handleDeleteWorkout() {

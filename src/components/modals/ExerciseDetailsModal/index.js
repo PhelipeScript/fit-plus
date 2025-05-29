@@ -5,22 +5,37 @@ import { InfoCard } from "../../cards/InfoCard";
 import { CustomButton } from "../../CustomButton";
 import { useWorkouts } from "../../../hooks/useWorkouts";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import { deleteExercise } from "../../../services/firestoreService";
 
 /**
  * @param {{
  *   visible: boolean,
- *   onDismiss: () => void,
+ *   onDismiss: (action: 'edit' | 'deleted' | null) => void,
  * }} props
  */
 export function ExerciseDetailsModal({ visible, onDismiss }) {
   const navigation = useNavigation()
-  const { currentExercise: exercise } = useWorkouts()
+  const { currentExercise: exercise, currentWorkout } = useWorkouts()
+  const [isDeleting, setIsDeleting] = useState(false)
   if (!exercise) return null;
 
 
   function goToEditExercise() {
     navigation.push('EditExercise')
-    onDismiss(false)
+    onDismiss('edit')
+  }
+
+  async function handleDeleteExercise() {
+    setIsDeleting(true)
+    try {
+      await deleteExercise(currentWorkout.id, exercise.id)
+      onDismiss('deleted')
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -90,6 +105,8 @@ export function ExerciseDetailsModal({ visible, onDismiss }) {
             title="Remover Exercício"
             icon={Trash}
             type="DANGER"
+            isLoading={isDeleting}
+            onPress={handleDeleteExercise}
         />
         {/* Só vai ter esse se tiver iniciado o treino
         <CustomButton 
