@@ -36,4 +36,33 @@
  * @property {string} createdAt 
  * @property {string} updatedAt 
  * @exports ExerciseProps
+ * 
+ * @typedef {Object} WorkoutSessionProps 
+ * @property {string} id 
+ * @property {string} name 
+ * @property {string} description 
+ * @property {'Diariamente'| '3x por semana'| '2x por semana'| '1x por semana'} frequency 
+ * @property {string} kcal 
+ * @property {'Iniciante' | 'Intermediário' | 'Avançado'} level 
+ * @property {string} startedAt
+ * @property {string?} endedAt
+ * @property {boolean} active
+ * @property {number?} duration
+ * @property {ExerciseSessionProps[]} exercises
+ * @property {string} createdAt 
+ * @exports WorkoutSessionProps
+ * 
+ * @typedef {Object} ExerciseSessionProps 
+ * @property {string} id
+ * @property {string} name 
+ * @property {number} series 
+ * @property {number} repetitions 
+ * @property {number} weight 
+ * @property {"Peito" | "Costas" | "Bíceps" | "Tríceps" | "Ombros" | "Abdômen" | "Pernas" | "Glúteos"} muscleGroup 
+ * @property {string?} notes 
+ * @property {boolean} done
+ * @property {string} createdAt 
+ * @exports ExerciseSessionProps
+ * 
+ * 
  */
