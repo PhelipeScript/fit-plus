@@ -5,19 +5,20 @@ import { CalendarDots, EnvelopeSimple, PersonArmsSpread, Phone, Scales, SignOut,
 import { CustomButton } from './../../components/CustomButton/index';
 import { useRef, useState } from "react";
 import { signOut } from '../../services/authService'
-import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "../../components/Avatar";
 import { useUser } from '../../hooks/useUser';
 import { UpdateFieldModal } from "../../components/modals/UpdateFieldModal";
+import { TouchableOpacity } from "react-native";
+import * as ImagePicker from 'expo-image-picker'
+import { updateUser } from "../../services/firestoreService";
 
 /** @typedef {'name'| 'age' | 'height' | 'weight' | 'phone' | null} FieldName */
 
 export function Profile() {
-  const navigation = useNavigation()
   const bottomSheetRef = useRef(null)
   const [isLoading, setIsLoading] = useState(false)
   const [editingField, setEditingField] = useState(/** @type {FieldName} */(null))
-  const { user } = useUser()
+  const { user, setUser } = useUser()
 
   /**
    * 
@@ -40,10 +41,36 @@ export function Profile() {
     }
   }
 
+  async function handleAvatarChange() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images', 
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      /** @type {UserProps} */
+      const userUpdated = {
+        ...user,
+        avatarUri: uri,
+      }
+      setUser(userUpdated)
+      try {
+        await updateUser(userUpdated);
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao salvar avatar');
+      }
+    }
+  }
+
   return (
     <Container>
       <ContentContainer>
-        <Avatar sourcePath={user.avatarUri} />
+        <TouchableOpacity onPress={handleAvatarChange}>
+          <Avatar sourcePath={user.avatarUri} />
+        </TouchableOpacity>
 
         <GenericCard 
           title="Informações Pessoais" 

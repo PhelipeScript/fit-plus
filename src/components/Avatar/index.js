@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { AvatarImage, Container } from './styles';
+import * as FileSystem from 'expo-file-system'
 
 /**
  * 
@@ -9,10 +11,25 @@ import { AvatarImage, Container } from './styles';
  */
 export function Avatar({ sourcePath, size='lg' }) {
   const fallback = require('../../../assets/logo.png');
+  const [validSourcePath, setValidSourcePath] = useState("")
+
+  async function checkAvatarUri() {
+    if (!sourcePath) return setValidSourcePath("")
+    
+    const fileInfo = await FileSystem.getInfoAsync(sourcePath)
+    if (fileInfo.exists) 
+      setValidSourcePath(sourcePath)
+    else
+      setValidSourcePath('')
+  } 
+
+  useEffect(() => {
+    checkAvatarUri()
+  }, [])
 
   return (
     <Container size={size}>
-      <AvatarImage source={sourcePath ? { uri: sourcePath } : fallback} />
+      <AvatarImage source={validSourcePath ? { uri: validSourcePath } : fallback} />
     </Container>
   );
 }
