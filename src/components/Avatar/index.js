@@ -25,7 +25,7 @@ export function Avatar({ sourcePath, size='lg' }) {
 
   useEffect(() => {
     checkAvatarUri()
-  }, [])
+  }, [sourcePath])
 
   return (
     <Container size={size}>

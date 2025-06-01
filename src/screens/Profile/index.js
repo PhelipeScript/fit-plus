@@ -69,7 +69,7 @@ export function Profile() {
     <Container>
       <ContentContainer>
         <TouchableOpacity onPress={handleAvatarChange}>
-          <Avatar sourcePath={user.avatarUri} />
+          <Avatar sourcePath={user?.avatarUri} />
         </TouchableOpacity>
 
         <GenericCard 

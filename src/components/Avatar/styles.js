@@ -3,11 +3,11 @@ import styled, { css } from "styled-components/native";
 export const Container = styled.View`
   ${({ theme, size }) => css`
     border-color: ${theme.colors.primary};
-    width: ${size === 'lg' ? '100px' : '45px'};
-    height: ${size === 'lg' ? '100px' : '45px'};
+    width: ${size === 'lg' ? '100px' : '30px'};
+    height: ${size === 'lg' ? '100px' : '30px'};
+    border-width: ${size === 'lg' ? '3px' : '1px'};
   `}
   border-radius: 9999px;
-  border-width: 3px;
   overflow: hidden;
 `;
 

@@ -3,11 +3,14 @@ import { Profile } from "../../screens/Profile";
 import { Workouts } from '../../screens/Workouts/index';
 import { Barbell, User } from "phosphor-react-native";
 import { useTheme } from "styled-components/native";
+import { useUser } from "../../hooks/useUser";
+import { Avatar } from "../../components/Avatar";
 
 const BottomTabs = createBottomTabNavigator()
 
 export function BottomTabsNavigation() {
   const theme = useTheme()
+  const { user } = useUser()
 
   return (
     <BottomTabs.Navigator
@@ -28,11 +31,7 @@ export function BottomTabsNavigation() {
             );
           } else if (route.name === "Profile") {
             return (
-              <User 
-                size={focused ? 28 : 24} 
-                color={focused ? theme.colors.primary : theme.colors.gray200} 
-                weight={focused ? "fill" : "regular"} 
-              />
+              <Avatar sourcePath={user?.avatarUri} size="sm" />
             );
           }
         },
