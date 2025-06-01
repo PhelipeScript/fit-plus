@@ -39,18 +39,13 @@
  * 
  * @typedef {Object} WorkoutSessionProps 
  * @property {string} id 
- * @property {string} name 
- * @property {string} description 
- * @property {'Diariamente'| '3x por semana'| '2x por semana'| '1x por semana'} frequency 
- * @property {string} kcal 
- * @property {'Iniciante' | 'Intermediário' | 'Avançado'} level 
  * @property {string} startedAt
  * @property {string?} endedAt
- * @property {boolean} active
- * @property {number?} duration
+ * @property {'in_progress' | 'finished'} status
+ * @property {{ seconds: number, minute: number, hours: number }} duration
  * @property {ExerciseSessionProps[]} exercises
- * @property {string} createdAt 
  * @exports WorkoutSessionProps
+ * 
  * 
  * @typedef {Object} ExerciseSessionProps 
  * @property {string} id

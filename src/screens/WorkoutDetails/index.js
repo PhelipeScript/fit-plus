@@ -9,7 +9,7 @@ import { CustomButton } from './../../components/CustomButton/index';
 import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, Plus, StopCircle, Trash,  } from "phosphor-react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
-import { deleteWorkout } from "../../services/firestoreService";
+import { createWorkoutSession, deleteWorkout, finishSession, getInProgressSession } from "../../services/firestoreService";
 import { ExerciseDetailsModal } from "../../components/modals/ExerciseDetailsModal";
 import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
 
@@ -17,6 +17,7 @@ export function WorkoutDetails() {
   const theme = useTheme()
   const navigation = useNavigation()
   const [isRemoving, setIsRemoving] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { 
     currentWorkout, 
     exercisesCurrentWorkout, 
@@ -30,6 +31,7 @@ export function WorkoutDetails() {
   const [delConfirmModalVisible, setDelConfirmModalVisible] = useState(false)
   const [isRunningWorkout, setIsRunningWorkout] = useState(false)
   const [sessionExercises, setSessionExercises] = useState(/** @type {ExerciseProps[]} */([]))
+  const [currentSession, setCurrentSession] = useState( /** @type {WorkoutSessionProps | null} */ (null))
 
   function goToNewExercise() {
     navigation.push('NewExercise')
@@ -39,11 +41,47 @@ export function WorkoutDetails() {
     navigation.push('EditWorkout')
   }
 
-  function handleStartWorkout() {
+  async function handleStartWorkout() {
     if (sessionExercises.length === 0)
       alert("Adicione pelo menos 1 exercício antes de iniciar o treino.")
-    else
-      setIsRunningWorkout(true)
+    else {
+      setIsLoading(true)
+      try {
+        await createWorkoutSession(currentWorkout.id, sessionExercises)
+        await getCurrentSession()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsLoading(false)
+        setIsRunningWorkout(true)
+      }
+    }
+  }
+
+  async function handleFinishWorkout() {
+    try {
+      setIsLoading(true)
+      await finishSession(currentWorkout.id, currentSession, sessionExercises)
+      setIsRunningWorkout(false)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function getCurrentSession() {
+    try {
+      const session = await getInProgressSession(currentWorkout.id)
+
+      if (session) {
+        setIsRunningWorkout(true)
+      }
+
+      setCurrentSession(session)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   /**
@@ -95,6 +133,8 @@ export function WorkoutDetails() {
 
   useEffect(() => {
     if (currentWorkout) {
+      getCurrentSession()
+
       navigation.setOptions({
         title: currentWorkout.name,
         headerTitleStyle: {
@@ -106,7 +146,7 @@ export function WorkoutDetails() {
   }, [currentWorkout])
 
   useEffect(() => {
-    setSessionExercises(exercisesCurrentWorkout)
+    setSessionExercises(exercisesCurrentWorkout.map(ex => ({...ex, done: false})))
   }, [exercisesCurrentWorkout])
 
   useFocusEffect(useCallback(() => {
@@ -173,13 +213,15 @@ export function WorkoutDetails() {
               title="Finalizar treino"
               icon={StopCircle}
               type="DANGER"
-              onPress={() => setIsRunningWorkout(false)}
+              onPress={handleFinishWorkout}
+              isLoading={isLoading}
             />
           ) : (
             <CustomButton 
               title="Iniciar treino"
               icon={Play}
               onPress={handleStartWorkout}
+              isLoading={isLoading}
             />
           )}
 

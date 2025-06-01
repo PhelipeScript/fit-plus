@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, increment, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from './firebaseConfig';
 import { UserNotFoundError } from '../errors/UserNotFoundError';
 /** @type {import('../types/userProps').UserProps} UserProps */
@@ -302,6 +302,95 @@ export async function getExercisesByWorkout(workoutId) {
     return exercises;
   } catch (error) {
     console.error("Erro ao buscar exercícios:", error);
+    throw error;
+  }
+}
+
+/**
+ * Cria uma nova sessão de treino no Firestore
+ * @param {string} workoutId 
+ * @param {ExerciseSessionProps[]} exercises 
+ * @returns {Promise<string>} 
+ */
+export async function createWorkoutSession(workoutId, exercises) {
+  try {
+    const userId = auth.currentUser?.uid
+    const sessionsRef = collection(
+      db,
+      `users/${userId}/workouts/${workoutId}/sessions`
+    );
+
+    const newSession = {
+      startedAt: new Date().toISOString(),
+      endedAt: "",
+      status: "in_progress",
+      duration: {
+        seconds: 0,
+        minutes: 0,
+        hours: 0,
+      },
+      exercises,
+    };
+
+    await addDoc(sessionsRef, newSession);
+  } catch (error) {
+    console.error("Erro ao criar sessão de treino:", error);
+    throw error;
+  }
+}
+
+/**
+ * Finaliza uma sessão de treino no Firestore
+ * @param {string} workoutId 
+ * @param {WorkoutSessionProps} session
+ * @param {ExerciseSessionProps[]} exercises 
+ * @returns {Promise<void>}
+ */
+export async function finishSession(workoutId, session, exercises) {
+  try {
+    const userId = auth.currentUser?.uid
+    const sessionRef = doc(db, `users/${userId}/workouts/${workoutId}/sessions/${session.id}`);
+
+    const now = new Date()
+    const start = new Date(session.startedAt)
+    const duration = {
+      seconds: Math.floor((now - start) / 1000 % 60),
+      minutes: Math.floor((now - start) / 1000 / 60 % 60),
+      hours: Math.floor((now - start) / 1000 / 60 / 60),
+    }
+    await updateDoc(sessionRef, {
+      endedAt: now.toISOString(),
+      status: "finished",
+      duration,
+      exercises,
+    });
+  } catch (error) {
+    console.error("Erro ao finalizar sessão:", error);
+    throw error;
+  }
+}
+
+/**
+ * Busca a sessão de treino com status "in_progress"
+ * @param {string} workoutId 
+ * @returns {Promise<WorkoutSessionProps|null>} 
+ */
+export async function getInProgressSession(workoutId) {
+  try {
+    const userId = auth.currentUser?.uid
+    const sessionsRef = collection(db, `users/${userId}/workouts/${workoutId}/sessions`);
+    const q = query(sessionsRef, where("status", "==", "in_progress"));
+
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      return { id: doc.id, ...doc.data() };
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar sessão em andamento:", error);
     throw error;
   }
 }
