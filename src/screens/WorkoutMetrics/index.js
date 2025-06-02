@@ -189,7 +189,7 @@ export function WorkoutMetrics() {
 
                 <ChartContainer>
                   <ChartTitle>Exercícios Mais Realizados</ChartTitle>
-                  {metrics.exercisesRanking && metrics.exercisesRanking.slice(0, 5).map((exercise) => (
+                  {metrics.exercisesRanking.length > 0 ? metrics.exercisesRanking.slice(0, 5).map((exercise) => (
                     <ExerciseItem key={exercise.id}>
                       <ExerciseInfo>
                         <ExerciseName>
@@ -204,7 +204,11 @@ export function WorkoutMetrics() {
                         <ExerciseWeight>{exercise.weight || 0}kg</ExerciseWeight>
                       </ExerciseStats>
                     </ExerciseItem>
-                  ))}
+                  )) : (
+                    <ChartTitle style={{ textAlign: 'center', color: '#6b7280', padding: 40 }}>
+                      Nenhum dado disponível
+                    </ChartTitle>
+                  )}
                 </ChartContainer>
               </>
             )}
