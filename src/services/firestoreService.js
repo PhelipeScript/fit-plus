@@ -398,3 +398,28 @@ export async function getInProgressSession(workoutId) {
     throw error;
   }
 }
+
+/**
+ * Busca todas as sessões associadas a um workout.
+ *
+ * @param {string} workoutId 
+ * @returns {Promise<WorkoutSessionProps[]>} 
+ */
+export async function getWorkoutSessions(workoutId) {
+  try {
+    const userId = auth.currentUser?.uid
+    const sessionsRef = collection(db, `users/${userId}/workouts/${workoutId}/sessions`);
+    const querySnapshot = await getDocs(sessionsRef);
+
+    /** @type {WorkoutSessionProps[]} */
+    const sessions = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return sessions;
+  } catch (error) {
+    console.error("Erro ao buscar sessões:", error);
+    return [];
+  }
+};

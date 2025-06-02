@@ -42,7 +42,7 @@
  * @property {string} startedAt
  * @property {string?} endedAt
  * @property {'in_progress' | 'finished'} status
- * @property {{ seconds: number, minute: number, hours: number }} duration
+ * @property {{ seconds: number, minutes: number, hours: number }} duration
  * @property {ExerciseSessionProps[]} exercises
  * @exports WorkoutSessionProps
  * 
