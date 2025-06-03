@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { getUser } from "../services/firestoreService";
 
-/** @type {UserContextProps} */
+/** @type {import("react").Context<UserContextProps>} */
 export const UserContext = createContext(null)
 
 /**
@@ -10,6 +10,7 @@ export const UserContext = createContext(null)
  */
 export function UserProvider({ children }) {
   const [user, setUser] = useState(/** @type {UserProps | null} */(null))
+  const [isUserLoading, setIsUserLoading] = useState(true)
 
   useEffect(() => {
     async function loadUser() {
@@ -19,6 +20,7 @@ export function UserProvider({ children }) {
       } catch (error) {
         console.error(error)
       } finally {
+        setIsUserLoading(false)
       }
     }
 
@@ -26,7 +28,7 @@ export function UserProvider({ children }) {
   }, [])
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, isUserLoading, setIsUserLoading }}>
       {children}
     </UserContext.Provider>
   )

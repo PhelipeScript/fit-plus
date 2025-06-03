@@ -5,11 +5,13 @@ import { useWorkouts } from '../../hooks/useWorkouts';
 import { getWorkoutSessions } from '../../services/firestoreService';
 import { StatCard } from '../../components/cards/StatCard';
 import { Barbell, ClockCountdown, Heartbeat } from 'phosphor-react-native';
+import { ActivityIndicator } from 'react-native-paper';
 
 export function WorkoutMetrics() {
   const [selectedTab, setSelectedTab] = useState('general');
   const { currentWorkout } = useWorkouts()
   const [sessions, setSessions] = useState(/** @type {WorkoutSessionProps[]} */([]))
+  const [isSessionsLoading, setIsSessionsLoading] = useState(true)
 
   const metrics = useMemo(() => {
     const finishedSessions = sessions.filter(session => session.status === 'finished');
@@ -94,10 +96,13 @@ export function WorkoutMetrics() {
 
   async function getSessions() {
     try {
+      setIsSessionsLoading(true)
       const sessions = await getWorkoutSessions(currentWorkout.id)
       setSessions(sessions)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsSessionsLoading(false)
     }
   }
 
@@ -107,7 +112,7 @@ export function WorkoutMetrics() {
     }
   }, [currentWorkout])
 
-  return (
+  return !isSessionsLoading ? (
     <Container>
       <ScrollView>
         <Header>
@@ -216,6 +221,10 @@ export function WorkoutMetrics() {
         </TabsContainer>
 
       </ScrollView>
+    </Container>
+  ): (
+    <Container style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
     </Container>
   );
 };

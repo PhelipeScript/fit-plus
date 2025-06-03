@@ -19,6 +19,8 @@
  * @typedef {Object} UserContextProps
  * @property {UserProps | null} user
  * @property {(user: UserProps) => void} setUser
+ * @property {boolean} isUserLoading
+ * @property {(isUserLoading: boolean) => void} setIsUserLoading
  * 
  * @exports UserContextProps
  */

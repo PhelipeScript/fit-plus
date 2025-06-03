@@ -3,10 +3,11 @@ import { GenericCard } from '../../components/cards/GenericCard/index';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useWorkouts } from '../../hooks/useWorkouts';
 import { useCallback } from "react";
+import { ActivityIndicator } from "react-native-paper";
 
 export function Workouts() {
   const navigation = useNavigation()
-  const { workouts, fetchWorkouts, setCurrentWorkout } = useWorkouts()
+  const { workouts, fetchWorkouts, setCurrentWorkout, isWorkoutsLoading } = useWorkouts()
 
   function goToNewWorkout() {
     navigation.push('NewWorkout')
@@ -26,7 +27,7 @@ export function Workouts() {
     fetchWorkouts()
   }, []))
 
-  return (
+  return !isWorkoutsLoading ? (
     <Container>
       {workouts.length > 0 && <Title>Meus treinos</Title>}
 
@@ -57,6 +58,10 @@ export function Workouts() {
       <NewWorkout onPress={goToNewWorkout}>
         <NewWorkoutIcon />
       </NewWorkout>
+    </Container>
+  ) : (
+    <Container>
+      <ActivityIndicator />
     </Container>
   )
 }

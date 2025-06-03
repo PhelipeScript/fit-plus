@@ -1,4 +1,4 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Container, DescriptionText, EmptyIcon, EmptyText, ExerciseCard, ExerciseCheckbox, ExerciseCheckboxMarked, ExerciseInfoText, ExerciseList, ExerciseListEmpty, ExerciseTitle, Header, InfoContainer, Main, TabsContainer, TabText, TabTextWrapper } from "./styles";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
@@ -25,6 +25,7 @@ export function WorkoutDetails() {
     setCurrentExercise,
     currentExercise,
     fetchExercisesCurrentWorkout,
+    isExercisesCurrentWorkoutLoading,
   } = useWorkouts() 
   const [currentTab, setCurrentTab] = useState( /** @type {'exercise' | 'info'} */ ('exercise'))
   const [ExerciseDetailsModalVisible, setExerciseDetailsModalVisible] = useState(false);
@@ -171,7 +172,8 @@ export function WorkoutDetails() {
       
       {currentTab === 'exercise' ? (
         <Main>
-          <ExerciseList
+          {!isExercisesCurrentWorkoutLoading ? (
+            <ExerciseList
             data={sessionExercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
@@ -198,6 +200,11 @@ export function WorkoutDetails() {
               : { minWidth: '100%', gap: 16, paddingBottom: 60 }
             }
           />
+          ) : (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator />
+            </View>
+          )}
 
           {!isRunningWorkout && (
             <CustomButton 

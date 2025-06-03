@@ -14,12 +14,16 @@
  * @typedef {Object} WorkoutContextProps
  * @property {WorkoutProps[]} workouts
  * @property {(workouts: WorkoutProps[]) => void} setWorkouts 
+ * @property {boolean} isWorkoutsLoading
+ * @property {(isWorkoutsLoading: boolean) => void} setIsWorkoutsLoading 
  * @property {WorkoutProps} currentWorkout
  * @property {(workouts: WorkoutProps) => void} setCurrentWorkout 
  * @property {ExerciseProps} currentExercise
  * @property {(workouts: ExerciseProps) => void} setCurrentExercise
  * @property {ExerciseProps[]} exercisesCurrentWorkout
  * @property {(exercises: ExerciseProps[]) => void} setExercisesCurrentWorkout 
+ * @property {boolean} isExercisesCurrentWorkoutLoading
+ * @property {(isExercisesCurrentWorkoutLoading: boolean) => void} setIsExercisesCurrentWorkoutLoading
  * @property {() => Promise<void>} fetchWorkouts 
  * @property {() => Promise<void>} fetchExercisesCurrentWorkout
  * @property {() => Promise<void>} getCurrentWorkoutUpdated 

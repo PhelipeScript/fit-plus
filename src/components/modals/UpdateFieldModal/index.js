@@ -59,6 +59,7 @@ export function UpdateFieldModal({ bottomSheetRef, fieldName }) {
       console.error(error)
     } finally {
       setIsLoading(false)
+      bottomSheetRef.current?.dismiss()
     }
   }
 

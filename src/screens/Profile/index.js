@@ -11,6 +11,7 @@ import { UpdateFieldModal } from "../../components/modals/UpdateFieldModal";
 import { TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker'
 import { updateUser } from "../../services/firestoreService";
+import { ActivityIndicator } from "react-native-paper";
 
 /** @typedef {'name'| 'age' | 'height' | 'weight' | 'phone' | null} FieldName */
 
@@ -18,7 +19,7 @@ export function Profile() {
   const bottomSheetRef = useRef(null)
   const [isLoading, setIsLoading] = useState(false)
   const [editingField, setEditingField] = useState(/** @type {FieldName} */(null))
-  const { user, setUser } = useUser()
+  const { user, setUser, isUserLoading } = useUser()
 
   /**
    * 
@@ -65,7 +66,7 @@ export function Profile() {
     }
   }
 
-  return (
+  return !isUserLoading ? (
     <Container>
       <ContentContainer>
         <TouchableOpacity onPress={handleAvatarChange}>
@@ -135,6 +136,10 @@ export function Profile() {
 
         <UpdateFieldModal bottomSheetRef={bottomSheetRef} fieldName={editingField} />
       </ContentContainer>
+    </Container>
+  ) : (
+    <Container style={{ alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
     </Container>
   )
 }

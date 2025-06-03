@@ -11,8 +11,10 @@ export const WorkoutContext = createContext(null)
  */
 export function WorkoutProvider({ children }) {
   const [workouts, setWorkouts] = useState(/** @type {WorkoutProps[]} */([]))
+  const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true)
   const [currentWorkout, setCurrentWorkout] = useState(/** @type {WorkoutProps | null} */(null))
   const [exercisesCurrentWorkout, setExercisesCurrentWorkout] = useState(/** @type {ExerciseProps[]} */([]))
+  const [isExercisesCurrentWorkoutLoading, setIsExercisesCurrentWorkoutLoading] = useState(false)
   const [currentExercise, setCurrentExercise] = useState(/** @type {ExerciseProps | null} */ (null))
 
   /**
@@ -25,15 +27,20 @@ export function WorkoutProvider({ children }) {
       setWorkouts(data);
     } catch (error) {
       console.error('Erro ao buscar treinos:', error);
-    } 
+    } finally {
+      setIsWorkoutsLoading(false)
+    }
   }
 
   async function fetchExercisesCurrentWorkout() {
     try {
+      setIsExercisesCurrentWorkoutLoading(true)
       const data = await getExercisesByWorkout(currentWorkout.id);
       setExercisesCurrentWorkout(data);
     } catch (error) {
       console.error('Erro ao buscar exercícios:', error);
+    } finally {
+      setIsExercisesCurrentWorkoutLoading(false)
     }
   }
 
@@ -67,12 +74,16 @@ export function WorkoutProvider({ children }) {
       value={{ 
         workouts, 
         setWorkouts, 
+        isWorkoutsLoading,
+        setIsWorkoutsLoading,
         fetchWorkouts, 
         fetchExercisesCurrentWorkout,
         currentWorkout, 
         setCurrentWorkout,
         exercisesCurrentWorkout,
         setExercisesCurrentWorkout,
+        isExercisesCurrentWorkoutLoading,
+        setIsExercisesCurrentWorkoutLoading,
         getCurrentWorkoutUpdated,
         currentExercise,
         setCurrentExercise,
