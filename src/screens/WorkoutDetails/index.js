@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Container, DescriptionText, EmptyIcon, EmptyText, ExerciseCard, ExerciseCheckbox, ExerciseCheckboxMarked, ExerciseInfoText, ExerciseList, ExerciseListEmpty, ExerciseTitle, Header, InfoContainer, Main, TabsContainer, TabText, TabTextWrapper } from "./styles";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
@@ -7,11 +7,11 @@ import { useTheme } from "styled-components/native";
 import { Divider } from './../../components/Divider/index';
 import { CustomButton } from './../../components/CustomButton/index';
 import { Barbell, Calendar, CalendarDots, Fire, Heartbeat, Info, Pencil, Play, Plus, StopCircle, Trash,  } from "phosphor-react-native";
-import { ActivityIndicator } from "react-native-paper";
 import { InfoCard } from "../../components/cards/InfoCard";
 import { createWorkoutSession, deleteWorkout, finishSession, getInProgressSession } from "../../services/firestoreService";
 import { ExerciseDetailsModal } from "../../components/modals/ExerciseDetailsModal";
 import { DeleteConfirmationModal } from "../../components/modals/DeleteConfirmationModal";
+import { Loading } from "../../components/Loading";
 
 export function WorkoutDetails() {
   const theme = useTheme()
@@ -201,9 +201,7 @@ export function WorkoutDetails() {
             }
           />
           ) : (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator />
-            </View>
+            <Loading width={50} height={50} />
           )}
 
           {!isRunningWorkout && (
@@ -314,8 +312,6 @@ export function WorkoutDetails() {
       )}
     </Container>
   ) : (
-    <Container style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <ActivityIndicator color={theme.colors.primary} />
-    </Container>
+    <Loading width={50} height={50} />
   )
 }

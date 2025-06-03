@@ -11,7 +11,7 @@ import { UpdateFieldModal } from "../../components/modals/UpdateFieldModal";
 import { TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker'
 import { updateUser } from "../../services/firestoreService";
-import { ActivityIndicator } from "react-native-paper";
+import { Loading } from "../../components/Loading";
 
 /** @typedef {'name'| 'age' | 'height' | 'weight' | 'phone' | null} FieldName */
 
@@ -138,8 +138,6 @@ export function Profile() {
       </ContentContainer>
     </Container>
   ) : (
-    <Container style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <ActivityIndicator />
-    </Container>
+    <Loading width={50} height={50} />
   )
 }

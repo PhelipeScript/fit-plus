@@ -3,7 +3,7 @@ import { GenericCard } from '../../components/cards/GenericCard/index';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useWorkouts } from '../../hooks/useWorkouts';
 import { useCallback } from "react";
-import { ActivityIndicator } from "react-native-paper";
+import { Loading } from "../../components/Loading";
 
 export function Workouts() {
   const navigation = useNavigation()
@@ -60,8 +60,6 @@ export function Workouts() {
       </NewWorkout>
     </Container>
   ) : (
-    <Container>
-      <ActivityIndicator />
-    </Container>
+    <Loading width={50} height={50} />
   )
 }

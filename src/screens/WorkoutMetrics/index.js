@@ -1,11 +1,11 @@
 import { useState, useMemo, useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { ChartContainer, ChartTitle, Container, ExerciseCount, ExerciseGroup, ExerciseInfo, ExerciseItem, ExerciseName, ExerciseStats, ExerciseWeight, Header, HeaderIcon, HeaderSubtitle, HeaderTitle, MuscleGroupDistributionPieChart, Spacer, StatsRow, TabButton, TabButtonText, TabContent, TabsContainer, TabsHeader, TitleContainer, WeeklyChart } from './styles';
+import { ChartContainer, ChartTitle, Container, ExerciseCount, ExerciseGroup, ExerciseInfo, ExerciseItem, ExerciseName, ExerciseStats, ExerciseWeight, Header, HeaderIcon, HeaderSubtitle, HeaderTitle, MuscleGroupDistributionPieChart, StatsRow, TabButton, TabButtonText, TabContent, TabsContainer, TabsHeader, TitleContainer, WeeklyChart } from './styles';
 import { useWorkouts } from '../../hooks/useWorkouts';
 import { getWorkoutSessions } from '../../services/firestoreService';
 import { StatCard } from '../../components/cards/StatCard';
 import { Barbell, ClockCountdown, Heartbeat } from 'phosphor-react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { Loading } from '../../components/Loading';
 
 export function WorkoutMetrics() {
   const [selectedTab, setSelectedTab] = useState('general');
@@ -223,8 +223,6 @@ export function WorkoutMetrics() {
       </ScrollView>
     </Container>
   ): (
-    <Container style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <ActivityIndicator />
-    </Container>
+    <Loading width={50} height={50} />
   );
 };
