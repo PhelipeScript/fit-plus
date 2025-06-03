@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "fit-plus",
+    "name": "FitPlus",
     "slug": "fit-plus",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,16 +17,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.phelipescript.fitplus",
+      "icon": "./assets/icon.png"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5db1ff1a-892a-4a51-a29d-f24e9d8a7639"
+      }
+    }
   }
 }
